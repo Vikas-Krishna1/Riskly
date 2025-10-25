@@ -1,17 +1,13 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from backend.users import users_router
+from backend.auth import auth_router
+from backend.database import ping_db
 
-app = FastAPI()
+app = FastAPI(title="Riskly Backend")
 
-# Allow your frontend to talk to the backend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # for dev only, restrict later
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@app.on_event("startup")
+async def startup_db():
+    await ping_db()
 
-@app.get("/")
-def root():
-    return {"message": "FastAPI is running!"}
+app.include_router(users_router, prefix="/users", tags=["Users"])
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
