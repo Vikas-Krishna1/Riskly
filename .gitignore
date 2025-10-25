@@ -1,0 +1,55 @@
+# -----------------------
+# 📦 Node / Frontend
+# -----------------------
+node_modules/
+dist/
+dist-ssr/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment / local configs
+.env
+.env.local
+.env.*.local
+
+# -----------------------
+# 🐍 Python / FastAPI
+# -----------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.egg-info/
+.venv/
+venv/
+.env/
+build/
+__init__.pyc
+
+# -----------------------
+# 🧠 IDE / Editor
+# -----------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# -----------------------
+# ⚙️ Misc
+# -----------------------
+*.local
+coverage/
+logs/
