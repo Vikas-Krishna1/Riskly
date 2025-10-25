@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #111827; /* Dark gray/black */
+  background-color: #111827; /* dark gray */
   color: #ffffff;
   padding: 1rem 3rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
@@ -12,6 +12,7 @@
   top: 0;
   left: 0;
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 /* LOGO */
@@ -25,17 +26,19 @@
 }
 
 .navbar-logo:hover {
-  color: #818cf8; /* Indigo-400 tone */
+  color: #818cf8;
 }
 
-/* NAV LINKS */
+/* LINKS */
 .navbar-links {
   display: flex;
   gap: 2rem;
+  flex: 1;
+  justify-content: center;
 }
 
 .navbar-links a {
-  font-size: 1.125rem;
+  font-size: 1.1rem;
   text-decoration: none;
   color: #ffffff;
   transition: color 0.3s ease;
@@ -45,35 +48,81 @@
   color: #818cf8;
 }
 
-/* LOGIN BUTTON */
+/* BUTTONS AREA */
+.navbar-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* BUTTON BASE STYLE */
 .navbar-button {
-  background-color: #6366f1; /* Indigo-500 */
-  color: white;
   font-weight: 600;
   text-decoration: none;
   padding: 0.6rem 1.25rem;
   border-radius: 0.75rem;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.navbar-button:hover {
-  background-color: #4f46e5; /* Indigo-600 */
+/* LOGIN BUTTON */
+.navbar-button.login {
+  background-color: #374151; /* gray-700 */
+  color: #ffffff;
 }
 
-/* RESPONSIVE DESIGN */
-@media (max-width: 768px) {
+.navbar-button.login:hover {
+  background-color: #4b5563; /* gray-600 */
+}
+
+/* SIGNUP BUTTON */
+.navbar-button.signup {
+  background-color: #6366f1; /* indigo-500 */
+  color: #ffffff;
+}
+
+.navbar-button.signup:hover {
+  background-color: #4f46e5; /* indigo-600 */
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .navbar {
+    flex-wrap: wrap;
+    padding: 1rem 2rem;
+  }
+
+  .navbar-links {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .navbar-actions {
+    order: 2;
+    margin-left: auto;
+  }
+
+  .navbar-logo {
+    order: 1;
+  }
+}
+
+@media (max-width: 600px) {
   .navbar {
     flex-direction: column;
-    padding: 1rem 2rem;
+    align-items: center;
+    padding: 1rem;
   }
 
   .navbar-links {
     flex-direction: column;
     gap: 1rem;
-    margin-top: 0.75rem;
   }
 
-  .navbar-button {
+  .navbar-actions {
+    flex-direction: row;
     margin-top: 0.75rem;
   }
 }
