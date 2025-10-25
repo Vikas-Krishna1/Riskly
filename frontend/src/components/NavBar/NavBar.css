@@ -1,0 +1,79 @@
+/* NAVBAR BASE */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111827; /* Dark gray/black */
+  color: #ffffff;
+  padding: 1rem 3rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* LOGO */
+.navbar-logo {
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 0.05rem;
+  text-decoration: none;
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+.navbar-logo:hover {
+  color: #818cf8; /* Indigo-400 tone */
+}
+
+/* NAV LINKS */
+.navbar-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.navbar-links a {
+  font-size: 1.125rem;
+  text-decoration: none;
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #818cf8;
+}
+
+/* LOGIN BUTTON */
+.navbar-button {
+  background-color: #6366f1; /* Indigo-500 */
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-button:hover {
+  background-color: #4f46e5; /* Indigo-600 */
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 1rem 2rem;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .navbar-button {
+    margin-top: 0.75rem;
+  }
+}
