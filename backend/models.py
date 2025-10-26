@@ -1,11 +1,10 @@
 # backend/models.py
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
 
 class User(BaseModel):
-    username: str = Field(...)
     email: EmailStr
-    password: str = Field(..., min_length=6)
+    password: str = Field(..., min_length=8)
+    full_name: str | None = None
 
 class UserInDB(User):
     hashed_password: str

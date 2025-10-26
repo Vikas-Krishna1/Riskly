@@ -1,20 +1,14 @@
-# backend/database.py
+import motor.motor_asyncio
 import os
-from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 
 load_dotenv()
 
 MONGO_DETAILS = os.getenv("MONGO_DETAILS")
-client = AsyncIOMotorClient(MONGO_DETAILS)
-db = client.get_default_database()  # picks DB from connection string
 
-async def ping_db():
-    try:
-        await client.admin.command('ping')
-        print("✅ Connected to MongoDB Atlas!")
-    except Exception as e:
-        print("❌ Could not connect to MongoDB:", e)
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
+db_name = MONGO_DETAILS.split("/")[-1].split("?")[0]
+db = client[db_name]
 
 def get_user_collection():
-    return db["users"]  # returns the 'users' collection
+    return db.get_collection("users")

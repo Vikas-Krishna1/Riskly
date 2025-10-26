@@ -1,25 +1,36 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel, EmailStr
 from backend.database import get_user_collection
-from backend.schemas import UserCreate, UserResponse
-from backend.utils import hash_password
+from backend.utils import hash_password, verify_password, create_access_token
 
-users_router = APIRouter()
+users_router = APIRouter(prefix="/users", tags=["Users"])
 
-@users_router.post("/register", response_model=UserResponse)
-async def register_user(user: UserCreate):
-    collection = get_user_collection()
-    
-    # Check if username or email exists
-    if await collection.find_one({"username": user.username}):
-        raise HTTPException(status_code=400, detail="Username already exists")
-    if await collection.find_one({"email": user.email}):
-        raise HTTPException(status_code=400, detail="Email already exists")
-    
-    # Hash password
-    user_dict = user.dict()
-    user_dict["password"] = hash_password(user.password)
-    
-    # Insert user
-    await collection.insert_one(user_dict)
-    
-    return {"username": user.username, "email": user.email}
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+@users_router.post("/register")
+async def register_user(user: UserRegister):
+    users = get_user_collection()
+    existing = await users.find_one({"email": user.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    hashed = hash_password(user.password)
+    new_user = {"email": user.email, "password": hashed}
+    await users.insert_one(new_user)
+    return {"message": "User registered successfully"}
+
+@users_router.post("/login")
+async def login_user(user: UserLogin):
+    users = get_user_collection()
+    db_user = await users.find_one({"email": user.email})
+    if not db_user or not verify_password(user.password, db_user["password"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    token = create_access_token({"sub": user.email})
+    return {"access_token": token, "token_type": "bearer"}

@@ -1,47 +1,25 @@
-# backend/utils.py
-from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
+from jose import jwt
+from passlib.context import CryptContext
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # load .env variables
+load_dotenv()
 
-# --- Password hashing setup ---
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-BCRYPT_MAX_BYTES = 72  # bcrypt limitation
-
-def hash_password(password: str) -> str:
-    """
-    Hash a password using bcrypt, truncating if it's longer than 72 bytes.
-    """
-    truncated = password.encode("utf-8")[:BCRYPT_MAX_BYTES]
-    return pwd_context.hash(truncated)
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    Verify a plain password against a bcrypt hash, truncating to 72 bytes.
-    """
-    truncated = plain_password.encode("utf-8")[:BCRYPT_MAX_BYTES]
-    return pwd_context.verify(truncated, hashed_password)
-
-# --- JWT setup ---
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecret")
-ALGORITHM = os.getenv("ALGORITHM", "HS256")
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
-def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
-    """
-    Create a JWT token with optional expiration.
-    """
-    to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def decode_access_token(token: str) -> dict:
-    """
-    Decode a JWT token. Raises JWTError if invalid.
-    """
-    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
