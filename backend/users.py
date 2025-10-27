@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException, Header
-from backend.database import get_user_collection
-from backend.schemas import UserCreate, UserLogin, UserResponse
-from backend.utils import hash_password, verify_password, create_access_token
-from backend.auth import verify_token
+from database import get_user_collection
+from schemas import UserCreate, UserLogin, UserResponse
+from utils import hash_password, verify_password, create_access_token
+from auth import verify_token
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
-@users_router.post("/register", response_model=UserResponse)
+@users_router.post("/register", response_model=UserCreate)
 async def register_user(user: UserCreate):
     users = get_user_collection()
     existing = await users.find_one({"$or": [{"email": user.email}, {"username": user.username}]})
@@ -16,7 +16,7 @@ async def register_user(user: UserCreate):
     hashed = hash_password(user.password)
     new_user = {"email": user.email, "username": user.username, "password": hashed}
     await users.insert_one(new_user)
-    return {"email": user.email, "username": user.username, "full_name": None}
+    return new_user
 
 @users_router.post("/login")
 async def login_user(user: UserLogin):

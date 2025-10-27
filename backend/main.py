@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from backend.users import users_router
-from backend.database import client
+from users import users_router
+from database import client
 
 app = FastAPI()
 app.include_router(users_router)
