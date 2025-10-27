@@ -2,19 +2,17 @@ from fastapi import FastAPI
 from backend.users import users_router
 from backend.database import client
 
-app = FastAPI(title="Riskly Backend")
-
-@app.on_event("startup")
-async def startup_event():
-    print("✅ Connected to MongoDB:", client.address)
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    client.close()
-    print("🛑 MongoDB connection closed")
-
+app = FastAPI()
 app.include_router(users_router)
 
 @app.get("/")
 async def root():
-    return {"message": "Riskly API running successfully"}
+    return {"message": "✅ API is working"}
+
+@app.on_event("shutdown")
+def shutdown_db_client():
+    client.close()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

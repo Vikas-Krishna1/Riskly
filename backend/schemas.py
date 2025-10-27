@@ -1,13 +1,20 @@
-# backend/schemas.py
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 class UserCreate(BaseModel):
     email: EmailStr
+    username: str
     password: str
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+    username: Optional[str] = None
 
 class UserResponse(BaseModel):
     email: EmailStr
-    full_name: str | None = None
+    username: Optional[str] = None
+    full_name: Optional[str] = None
 
     class Config:
         orm_mode = True

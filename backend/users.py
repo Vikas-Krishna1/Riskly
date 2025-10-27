@@ -1,36 +1,44 @@
-from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, EmailStr
+from fastapi import APIRouter, HTTPException, Header
 from backend.database import get_user_collection
+from backend.schemas import UserCreate, UserLogin, UserResponse
 from backend.utils import hash_password, verify_password, create_access_token
+from backend.auth import verify_token
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
-class UserRegister(BaseModel):
-    email: EmailStr
-    password: str
-
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-
-@users_router.post("/register")
-async def register_user(user: UserRegister):
+@users_router.post("/register", response_model=UserResponse)
+async def register_user(user: UserCreate):
     users = get_user_collection()
-    existing = await users.find_one({"email": user.email})
+    existing = await users.find_one({"$or": [{"email": user.email}, {"username": user.username}]})
     if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(status_code=400, detail="Email or username already registered")
 
     hashed = hash_password(user.password)
-    new_user = {"email": user.email, "password": hashed}
+    new_user = {"email": user.email, "username": user.username, "password": hashed}
     await users.insert_one(new_user)
-    return {"message": "User registered successfully"}
+    return {"email": user.email, "username": user.username, "full_name": None}
 
 @users_router.post("/login")
 async def login_user(user: UserLogin):
     users = get_user_collection()
-    db_user = await users.find_one({"email": user.email})
+    db_user = await users.find_one({
+        "$or": [
+            {"email": user.email},
+            {"username": user.username} if user.username else {}
+        ]
+    })
     if not db_user or not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = create_access_token({"sub": user.email})
+    token = create_access_token({"sub": db_user["email"]})
     return {"access_token": token, "token_type": "bearer"}
+
+@users_router.get("/me", response_model=UserResponse)
+async def get_current_user(authorization: str = Header(...)):
+    token = authorization.split(" ")[1] if " " in authorization else authorization
+    email = verify_token(token)
+    users = get_user_collection()
+    user = await users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"email": user["email"], "username": user.get("username"), "full_name": None}

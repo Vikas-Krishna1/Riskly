@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException
+from fastapi import HTTPException
 from jose import jwt, JWTError
 import os
 from dotenv import load_dotenv
@@ -17,3 +17,6 @@ def verify_token(token: str):
         return email
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
