@@ -22,7 +22,7 @@ function NavBar() {
         <Link to="/login" className="navbar-button login">
           Login
         </Link>
-        <Link to="/signup" className="navbar-button signup">
+        <Link to="/register" className="navbar-button signup">
           Sign Up
         </Link>
       </div>
