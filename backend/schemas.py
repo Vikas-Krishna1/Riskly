@@ -8,8 +8,8 @@ class UserCreate(BaseModel):
 
 class UserLogin(BaseModel):
     email: EmailStr
+    username: str  # ← Make this required instead of optional
     password: str
-    username: Optional[str] = None
 
 class UserResponse(BaseModel):
     email: EmailStr

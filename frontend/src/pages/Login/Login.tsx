@@ -1,34 +1,31 @@
 import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import "./Login.css"; // Import external CSS
+import { useAuth } from "../../hooks/useAuth";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const { login } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:8000/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMessage(data.message || data.detail || "Login failed");
-        return;
+      const success = await login(email, username, password); // ← 3 parameters
+      
+      if (success) {
+        setMessage("✅ Login successful!");
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        // Optional: redirect
+        // window.location.href = "/dashboard";
+      } else {
+        setMessage("❌ Invalid credentials");
       }
-
-      setMessage("✅ Login successful!");
-      setUsername("");
-      setEmail("");
-      setPassword("");
     } catch (error) {
       console.error(error);
       setMessage("⚠️ Server error. Try again later.");

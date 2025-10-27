@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import "./Register.css"; // 👈 same style format as Login.css
+import { useAuth } from "../../hooks/useAuth";
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -8,36 +9,18 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const { register } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setMessage("❌ Passwords do not match");
-      return;
-    }
+    const success = await register(email, username, password);
 
-    try {
-      const res = await fetch("http://localhost:8000/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMessage(data.detail || "Registration failed");
-        return;
-      }
-
+    if (success) {
       setMessage("✅ Registration successful!");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-    } catch (error) {
-      setMessage("⚠️ Server error. Try again later.");
+      // Redirect to dashboard
+    } else {
+      setMessage("❌ Registration failed. Email or username may already exist.");
     }
   };
 
