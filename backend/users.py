@@ -6,6 +6,7 @@ from auth import verify_token
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
+
 @users_router.post("/register", response_model=UserCreate)
 async def register_user(user: UserCreate):
     users = get_user_collection()
