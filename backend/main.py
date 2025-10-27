@@ -1,25 +1,18 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from Auth.register import handle_register, RequestRegister
-from Auth.login import handle_login, LoginUser
+from users import users_router
+from database import client
 
 app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.include_router(users_router)
 
 @app.get("/")
-def root():
-    return {"message": "FastAPI is running!"}
+async def root():
+    return {"message": "✅ API is working"}
 
-@app.post("/api/register")
-async def register(req: RequestRegister):
-    return await handle_register(req)
-@app.post("/api/login")
-async def login(req: LoginUser):
-    return await handle_login(req)
+@app.on_event("shutdown")
+def shutdown_db_client():
+    client.close()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
