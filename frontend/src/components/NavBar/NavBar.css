@@ -3,16 +3,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #111827; /* dark gray */
+  background: linear-gradient(135deg, #1a1f35 0%, #111827 100%);
   color: #ffffff;
   padding: 1rem 3rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
   box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+/* LOADING STATE */
+.navbar-loading {
+  color: #818cf8;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 /* LOGO */
@@ -22,11 +30,14 @@
   letter-spacing: 0.05rem;
   text-decoration: none;
   color: #ffffff;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
 }
 
 .navbar-logo:hover {
   color: #818cf8;
+  transform: translateY(-2px);
+  text-shadow: 0 4px 20px rgba(99, 102, 241, 0.6);
 }
 
 /* LINKS */
@@ -40,15 +51,80 @@
 .navbar-links a {
   font-size: 1.1rem;
   text-decoration: none;
-  color: #ffffff;
-  transition: color 0.3s ease;
+  color: #d1d5db;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+.navbar-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #818cf8, #6366f1);
+  transition: width 0.3s ease;
 }
 
 .navbar-links a:hover {
-  color: #818cf8;
+  color: #ffffff;
 }
 
-/* BUTTONS AREA */
+.navbar-links a:hover::after {
+  width: 100%;
+}
+
+/* AUTHENTICATED USER SECTION */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(55, 65, 81, 0.5);
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(129, 140, 248, 0.2);
+}
+
+.user-welcome {
+  font-size: 1rem;
+  color: #d1d5db;
+  font-weight: 500;
+}
+
+.username {
+  color: #818cf8;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+/* LOGOUT BUTTON */
+.logout-button {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.logout-button:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+}
+
+.logout-button:active {
+  transform: translateY(0);
+}
+
+/* BUTTONS AREA (Login/Signup) */
 .navbar-actions {
   display: flex;
   gap: 1rem;
@@ -58,29 +134,37 @@
 .navbar-button {
   font-weight: 600;
   text-decoration: none;
-  padding: 0.6rem 1.25rem;
-  border-radius: 0.75rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* LOGIN BUTTON */
 .navbar-button.login {
-  background-color: #374151; /* gray-700 */
+  background-color: #374151;
   color: #ffffff;
+  border: 1px solid rgba(129, 140, 248, 0.3);
 }
 
 .navbar-button.login:hover {
-  background-color: #4b5563; /* gray-600 */
+  background-color: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  border-color: #818cf8;
 }
 
 /* SIGNUP BUTTON */
 .navbar-button.signup {
-  background-color: #6366f1; /* indigo-500 */
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
   color: #ffffff;
+  border: none;
 }
 
 .navbar-button.signup:hover {
-  background-color: #4f46e5; /* indigo-600 */
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
 }
 
 /* RESPONSIVE */
@@ -99,13 +183,28 @@
     gap: 1rem;
   }
 
-  .navbar-actions {
+  .navbar-actions,
+  .navbar-user {
     order: 2;
     margin-left: auto;
   }
 
   .navbar-logo {
     order: 1;
+  }
+
+  .navbar-user {
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+  }
+
+  .user-welcome {
+    font-size: 0.9rem;
+  }
+
+  .logout-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -119,10 +218,22 @@
   .navbar-links {
     flex-direction: column;
     gap: 1rem;
+    align-items: center;
   }
 
-  .navbar-actions {
+  .navbar-actions,
+  .navbar-user {
     flex-direction: row;
     margin-top: 0.75rem;
+  }
+
+  .navbar-user {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .user-welcome {
+    font-size: 0.85rem;
   }
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import "./Login.css"; // Import external CSS
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -9,18 +10,24 @@ function Login() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const { login } = useAuth();
+  const navigate = useNavigate();
+  function sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const success = await login(email, username, password); // ← 3 parameters
+      const success = await login(email, username, password);
       
       if (success) {
         setMessage("✅ Login successful!");
         setUsername("");
         setEmail("");
         setPassword("");
+        await sleep(2000);
+        navigate('/home');
         // Optional: redirect
         // window.location.href = "/dashboard";
       } else {
