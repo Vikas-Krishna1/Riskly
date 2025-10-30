@@ -4,6 +4,7 @@ import NavBar from './components/NavBar/NavBar';
 import Register from './pages/Register/Register';
 import Login from './pages/Login/Login';
 import About from './pages/About/About';
+import PortfolioDash from "./pages/UserPortfolios/PortfolioDash/portfolioDash";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route  path="/about" element={<About/>}/>
+        <Route  path="/:userId/portfolios" element={<PortfolioDash/>}/>
       </Routes>
       
     </Router>

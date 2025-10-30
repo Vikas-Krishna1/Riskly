@@ -33,7 +33,7 @@ function NavBar() {
       {/* Links */}
       <div className="navbar-links">
         <Link to="/home">Home</Link>
-        <Link to="/portfolio">Portfolio</Link>
+        <Link to={`/${user?.id}/portfolios`}>Portfolio</Link>  
         <Link to="/analytics">Analytics</Link>
         <Link to="/about">About</Link>
       </div>
