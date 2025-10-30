@@ -44,5 +44,5 @@ async def get_current_user(request: Request):
     return {
         "email": user["email"],
         "username": user.get("username"),
-        "user_id": str(user["_id"])
+        "id": str(user["_id"])
     }

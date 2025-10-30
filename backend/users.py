@@ -70,6 +70,7 @@ async def logout_user(response: Response):
 @users_router.get("/me", response_model=UserResponse)
 async def get_current_user_info(current_user: dict = Depends(get_current_user)):
     return {
+        "id": current_user["id"],
         "email": current_user["email"],
         "username": current_user["username"],
         "full_name": None

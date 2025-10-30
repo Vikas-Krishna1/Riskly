@@ -5,7 +5,6 @@ import { useAuth } from "../../hooks/useAuth";
 function NavBar() {
   const {user, loading, isAuthenticated, logout } = useAuth(); 
   
-  
   if (loading) {
     return (
       <nav className="navbar">
