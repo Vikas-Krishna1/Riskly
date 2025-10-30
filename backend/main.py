@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from users import users_router
 from database import client
+from portfolios import portfolio_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()

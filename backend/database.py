@@ -13,6 +13,8 @@ db = client[db_name]
 
 def get_user_collection():
     return db["users"]
+def get_portfolio_collection():
+    return db["portfolios"]
 
 print(f"✅ Connected to MongoDB: {client.address}")
 print(f"Using database: {db_name}")

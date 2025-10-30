@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional, List
+from datetime import datetime
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -19,3 +20,34 @@ class UserResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class HoldingCreate(BaseModel):
+    symbol: str = Field(..., min_length=1, max_length=10, description="Stock ticker symbol")
+    shares: float = Field(..., gt=0, description="Number of shares")
+    purchasePrice: float = Field(..., gt=0, description="Purchase price per share")
+    purchaseDate: Optional[datetime] = None
+
+class PortfolioCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100, description="Portfolio name")
+    description: Optional[str] = Field(None, max_length=500, description="Portfolio description")
+
+class PortfolioResponse(BaseModel):
+    id: str
+    userId: str
+    name: str
+    description: Optional[str] = None
+    holdings: List[dict] = []
+    createdAt: datetime
+    
+    class Config:
+        orm_mode = True
+
+class PortfolioUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=500)
+
+class AddHoldingRequest(BaseModel):
+    symbol: str = Field(..., min_length=1, max_length=10)
+    shares: float = Field(..., gt=0)
+    purchasePrice: float = Field(..., gt=0)
+    purchaseDate: Optional[datetime] = None
