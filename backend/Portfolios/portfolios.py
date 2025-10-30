@@ -5,6 +5,7 @@ from typing import List
 from database import get_portfolio_collection
 from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate  # ← This imports from backend/schemas.py
 from auth import get_current_user
+
 portfolio_router = APIRouter(prefix="/portfolios", tags=["Portfolios"])
 
 # Create a new portfolio

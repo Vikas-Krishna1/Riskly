@@ -18,7 +18,6 @@ const Register: React.FC = () => {
 
     if (success) {
       setMessage("✅ Registration successful!");
-      // Redirect to dashboard
     } else {
       setMessage("❌ Registration failed. Email or username may already exist.");
     }
