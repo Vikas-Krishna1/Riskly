@@ -1,59 +1,28 @@
-import { useState, useEffect, useCallback } from "react";
-import * as authApi from "../api/auth";
+import { useState, useEffect } from "react";
+import { user, loading, subscribe } from "../auth/authState";
+import * as authActions from "../auth/authActions";
 
 export const useAuth = () => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Extract the fetch logic into a reusable function
-  const fetchUser = useCallback(async () => {
-    setLoading(true);
-    try {
-      const userData = await authApi.getCurrentUser();
-      setUser(userData);
-    } catch {
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Dummy state just to trigger re-renders
+  const [, forceUpdate] = useState({});
 
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    // Subscribe to state changes
+    const unsubscribe = subscribe(() => {
+      forceUpdate({}); // Re-render this component
+    });
 
-  const loginUser = async (email: string, username: string, password: string) => {
-    try {
-      await authApi.login(email, username, password);
-      await fetchUser(); // Re-fetch user after login
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
-  const registerUser = async (email: string, username: string, password: string) => {
-    try {
-      await authApi.register(email, username, password);
-      await fetchUser(); // Re-fetch user after register
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
-
-  const logoutUser = async () => {
-    await authApi.logout();
-    setUser(null);
-  };
+    // Cleanup on unmount
+    return unsubscribe;
+  }, []);
 
   return {
     user,
     loading,
-    login: loginUser,
-    register: registerUser,
-    logout: logoutUser,
+    login: authActions.login,
+    register: authActions.register,
+    logout: authActions.logout,
     isAuthenticated: !!user,
-    refetchUser: fetchUser, // Expose this for manual re-fetching
+    refetchUser: authActions.fetchUser,
   };
 };
