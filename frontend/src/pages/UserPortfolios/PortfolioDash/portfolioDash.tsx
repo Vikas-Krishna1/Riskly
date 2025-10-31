@@ -36,8 +36,7 @@ export default function PortfolioDash() {
 
   const handleCardClick = (portfolio: Portfolio) => {
     // Format portfolio name for URL (replace spaces with hyphens, lowercase)
-    const portfolioSlug = portfolio.name.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/user/${portfolio.id}/portfolios/${portfolioSlug}`);
+    navigate(`/user/${portfolio.id}/portfolios/${portfolio.userId}`);
   };
 
   const handleDelete = async (e: React.MouseEvent, id: string, name: string) => {
