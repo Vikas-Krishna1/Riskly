@@ -1,10 +1,7 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
+import { portfolioService } from './portfolioService';
+import { PortfolioCreate } from './types';
 import './PortfolioForm.css';
-
-interface PortfolioFormData {
-  name: string;
-  description: string;
-}
 
 interface Message {
   type: 'success' | 'error' | '';
@@ -12,7 +9,7 @@ interface Message {
 }
 
 export default function PortfolioForm() {
-  const [formData, setFormData] = useState<PortfolioFormData>({
+  const [formData, setFormData] = useState<PortfolioCreate>({
     name: '',
     description: ''
   });
@@ -25,27 +22,18 @@ export default function PortfolioForm() {
     setMessage({ type: '', text: '' });
 
     try {
-      const response = await fetch('/api/portfolios', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          description: formData.description || undefined
-        }),
+      await portfolioService.create({
+        name: formData.name,
+        description: formData.description || undefined
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setMessage({ type: 'success', text: 'Portfolio created successfully!' });
-        setFormData({ name: '', description: '' });
-      } else {
-        const error = await response.json();
-        setMessage({ type: 'error', text: error.detail || 'Failed to create portfolio' });
-      }
+      
+      setMessage({ type: 'success', text: 'Portfolio created successfully!' });
+      setFormData({ name: '', description: '' });
     } catch (error) {
-      setMessage({ type: 'error', text: 'Network error. Please try again.' });
+      setMessage({ 
+        type: 'error', 
+        text: error instanceof Error ? error.message : 'An error occurred'
+      });
     } finally {
       setLoading(false);
     }
@@ -96,7 +84,7 @@ export default function PortfolioForm() {
             placeholder="Enter portfolio description (optional)"
           />
           <p className="character-count">
-            {formData.description.length}/500 characters
+            {formData.description?.length || 0}/500 characters
           </p>
         </div>
 

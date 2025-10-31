@@ -23,13 +23,14 @@ async def register_user(user: UserCreate, response: Response):
     
     # Set HTTP-only cookie
     response.set_cookie(
-        key="access_token",
-        value=token,
-        httponly=True,
-        secure=False,
-        samesite="lax",
-        max_age=1800,
-    )
+    key="access_token",
+    value=token,
+    httponly=True,
+    secure=False,
+    samesite="lax",
+    max_age=1800,
+    domain="localhost",  # ← Add this line
+)
     
     return {"message": "User registered successfully", "username": user.username}
 
@@ -48,13 +49,14 @@ async def login_user(user: UserLogin, response: Response):
     token = create_access_token({"sub": db_user["email"]})
     
     response.set_cookie(
-        key="access_token",
-        value=token,
-        httponly=True,
-        secure=False,
-        samesite="lax",
-        max_age=1800,
-    )
+    key="access_token",
+    value=token,
+    httponly=True,
+    secure=False,
+    samesite="lax",
+    max_age=1800,
+    domain="localhost",  # ← Add this line
+)
     
     return {
         "message": "Login successful",
