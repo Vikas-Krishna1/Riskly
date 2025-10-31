@@ -5,6 +5,7 @@ import Register from './pages/Register/Register';
 import Login from './pages/Login/Login';
 import About from './pages/About/About';
 import PortfolioDash from "./pages/UserPortfolios/PortfolioDash/portfolioDash";
+import SinglePortfolio from "./pages/UserPortfolios/SinglePortfolio/SinglePortfolio";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route  path="/about" element={<About/>}/>
         <Route  path="/:userId/portfolios" element={<PortfolioDash/>}/>
+        <Route path="/:userID/portfolios/:portfolioName" element={<SinglePortfolio/>}/>
       </Routes>
       
     </Router>

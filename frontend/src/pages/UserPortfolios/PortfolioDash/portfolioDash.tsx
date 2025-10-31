@@ -3,8 +3,10 @@ import { portfolioService } from '../../../components/PortfolioForm/portfolioSer
 import { Portfolio } from '../../../components/PortfolioForm/types';
 import PortfolioForm from '../../../components/PortfolioForm/PortfolioForm';
 import './portFolioDash.css';
+import { useNavigate } from 'react-router-dom';
 
-export default function portfolioDash() {
+export default function PortfolioDash() {
+  const navigate = useNavigate();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -32,7 +34,15 @@ export default function portfolioDash() {
     fetchPortfolios(); // Refresh the list
   };
 
-  const handleDelete = async (id: string, name: string) => {
+  const handleCardClick = (portfolio: Portfolio) => {
+    // Format portfolio name for URL (replace spaces with hyphens, lowercase)
+    const portfolioSlug = portfolio.name.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/user/${portfolio.id}/portfolios/${portfolioSlug}`);
+  };
+
+  const handleDelete = async (e: React.MouseEvent, id: string, name: string) => {
+    e.stopPropagation(); // Prevent card click when deleting
+    
     if (!confirm(`Are you sure you want to delete "${name}"?`)) {
       return;
     }
@@ -97,11 +107,15 @@ export default function portfolioDash() {
       ) : (
         <div className="portfolio-grid">
           {portfolios.map((portfolio) => (
-            <div key={portfolio.id} className="portfolio-card">
+            <div 
+              key={portfolio.id} 
+              className="portfolio-card"
+              onClick={() => handleCardClick(portfolio)}
+            >
               <div className="portfolio-card-header">
                 <h3 className="portfolio-name">{portfolio.name}</h3>
                 <button
-                  onClick={() => handleDelete(portfolio.id, portfolio.name)}
+                  onClick={(e) => handleDelete(e, portfolio.id, portfolio.name)}
                   className="delete-button"
                   title="Delete portfolio"
                 >
