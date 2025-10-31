@@ -8,7 +8,11 @@ interface Message {
   text: string;
 }
 
-export default function PortfolioForm() {
+interface PortfolioFormProps {
+  onSuccess?: () => void;
+}
+
+export default function PortfolioForm({ onSuccess }: PortfolioFormProps) {
   const [formData, setFormData] = useState<PortfolioCreate>({
     name: '',
     description: ''
@@ -29,6 +33,13 @@ export default function PortfolioForm() {
       
       setMessage({ type: 'success', text: 'Portfolio created successfully!' });
       setFormData({ name: '', description: '' });
+      
+      // Call the onSuccess callback if provided
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess();
+        }, 1000); // Small delay to show success message
+      }
     } catch (error) {
       setMessage({ 
         type: 'error', 

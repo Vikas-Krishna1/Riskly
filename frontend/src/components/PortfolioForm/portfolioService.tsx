@@ -7,8 +7,29 @@ class PortfolioService {
   /**
    * Fetch all portfolios
    */
+  async getCurrentUser(): Promise<{ id: string; username: string }> {
+    const response = await fetch('http://localhost:8000/users/me', {
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to get current user');
+    }
+    
+    return response.json();
+  }
+
+  /**
+   * Fetch all portfolios for the current user
+   */
   async getAll(): Promise<Portfolio[]> {
-    const response = await fetch(API_BASE_URL);
+    // First, get the current user's ID
+    const user = await this.getCurrentUser();
+    
+    // Then fetch their portfolios
+    const response = await fetch(`${API_BASE_URL}/user/${user.id}`, {
+      credentials: 'include',
+    });
     
     if (!response.ok) {
       const error: ApiError = await response.json();
@@ -22,7 +43,9 @@ class PortfolioService {
    * Fetch a single portfolio by ID
    */
   async getById(id: string): Promise<Portfolio> {
-    const response = await fetch(`${API_BASE_URL}/${id}`);
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      credentials: 'include',
+    });
     
     if (!response.ok) {
       const error: ApiError = await response.json();
@@ -41,7 +64,6 @@ class PortfolioService {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        
       },
       body: JSON.stringify(data),
     });
@@ -60,6 +82,7 @@ class PortfolioService {
   async update(id: string, data: PortfolioUpdate): Promise<Portfolio> {
     const response = await fetch(`${API_BASE_URL}/${id}`, {
       method: 'PUT',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -80,6 +103,7 @@ class PortfolioService {
   async delete(id: string): Promise<void> {
     const response = await fetch(`${API_BASE_URL}/${id}`, {
       method: 'DELETE',
+      credentials: 'include',
     });
     
     if (!response.ok) {
