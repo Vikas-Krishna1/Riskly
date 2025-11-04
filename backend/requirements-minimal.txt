@@ -1,0 +1,27 @@
+# Core Framework
+fastapi==0.120.0
+uvicorn==0.38.0
+pydantic==2.12.3
+
+# Database
+motor==3.7.1
+pymongo==4.15.3
+
+# Authentication & Security
+python-jose==3.5.0
+passlib==1.7.4
+bcrypt==4.2.0
+
+# Market Data & Analytics
+yfinance==0.2.38
+pandas==2.2.1
+numpy==1.26.4
+scipy==1.13.0
+
+# AI (Optional)
+openai==1.12.0
+
+# Utilities
+python-dotenv==1.2.1
+email-validator==2.3.0
+
