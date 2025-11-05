@@ -3,7 +3,7 @@ from bson import ObjectId
 from datetime import datetime
 from typing import List
 from database import get_portfolio_collection
-from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate  # ← This imports from backend/schemas.py
+from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate, HoldingCreate  # ← This imports from backend/schemas.py
 from auth import get_current_user
 
 portfolio_router = APIRouter(prefix="/portfolios", tags=["Portfolios"])
@@ -146,3 +146,37 @@ async def delete_portfolio(
     await portfolios.delete_one({"_id": ObjectId(portfolio_id)})
     
     return {"message": "Portfolio deleted successfully"}
+
+@portfolio_router.post("/{portfolio_id}/holdings")
+async def add_holding(
+    portfolio_id: str,
+    holding_data: HoldingCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    portfolios = get_portfolio_collection()
+
+    # Find the portfolio by ID
+    portfolio = await portfolios.find_one({"_id": ObjectId(portfolio_id)})
+    if not portfolio:
+        return {"error": "Portfolio not found"}
+
+    # Build the new holding entry
+    newHolding = {
+        "symbol": holding_data.symbol,
+        "shares": holding_data.shares,          # corrected: was 'share'
+        "purchasePrice": holding_data.purchasePrice,
+        "purchaseDate": holding_data.purchaseDate,
+    }
+
+    # Push new holding into Holdings array
+    await portfolios.update_one(
+        {"_id": ObjectId(portfolio_id)},
+        {"$push": {"Holdings": newHolding}}
+    )
+
+    return {
+        "message": "Holding successfully created!",
+        "added": newHolding
+    }
+
+    
