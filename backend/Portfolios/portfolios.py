@@ -158,20 +158,25 @@ async def add_holding(
     # Find the portfolio by ID
     portfolio = await portfolios.find_one({"_id": ObjectId(portfolio_id)})
     if not portfolio:
-        return {"error": "Portfolio not found"}
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+
+    # Security: verify ownership
+    if str(portfolio["userId"]) != current_user["id"]:
+        raise HTTPException(status_code=403, detail="You don't have access to this portfolio")
 
     # Build the new holding entry
     newHolding = {
+        "id": str(ObjectId()),
         "symbol": holding_data.symbol,
-        "shares": holding_data.shares,          # corrected: was 'share'
+        "shares": holding_data.shares,
         "purchasePrice": holding_data.purchasePrice,
         "purchaseDate": holding_data.purchaseDate,
     }
 
-    # Push new holding into Holdings array
+    # Push new holding into holdings array
     await portfolios.update_one(
         {"_id": ObjectId(portfolio_id)},
-        {"$push": {"Holdings": newHolding}}
+        {"$push": {"holdings": newHolding}}
     )
 
     return {

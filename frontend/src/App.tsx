@@ -17,7 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route  path="/about" element={<About/>}/>
         <Route  path="/:userId/portfolios" element={<PortfolioDash/>}/>
-        <Route path="/:userID/portfolios/:portfolioID" element={<SinglePortfolio/>}/>
+        <Route path="/:userId/portfolios/:portfolioId" element={<SinglePortfolio/>}/>
       </Routes>
       
     </Router>

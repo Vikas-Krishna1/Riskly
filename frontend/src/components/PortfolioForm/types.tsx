@@ -5,6 +5,7 @@ export interface Portfolio {
   id: string;
   userId: string;
   name: string;
+  holdings: Holding[];
   description?: string;
   created_at?: string;
   updated_at?: string;
@@ -23,30 +24,27 @@ export interface PortfolioUpdate {
 // ========== HOLDING TYPES ==========
 export interface Holding {
   id: string;
-  portfolio_id: string;
-  ticker: string;
+  symbol: string;
   shares: number;
-  purchase_price: number;
-  purchase_date: string;
-  current_price?: number;
-  notes?: string;
+  purchasePrice: number;
+  purchaseDate: string;
+  // These fields might come from other API calls, so they are optional
+  currentPrice?: number;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface HoldingCreate {
-  ticker: string;
+  symbol: string;
   shares: number;
-  purchase_price: number;
-  purchase_date: string;
-  notes?: string;
+  purchasePrice: number;
+  purchaseDate: string; // Should be in 'YYYY-MM-DD' format
 }
 
 export interface HoldingUpdate {
   shares?: number;
-  purchase_price?: number;
-  purchase_date?: string;
-  notes?: string;
+  purchasePrice?: number;
+  purchaseDate?: string;
 }
 
 // ========== API ERROR TYPE ==========

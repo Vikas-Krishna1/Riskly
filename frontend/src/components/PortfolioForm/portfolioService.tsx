@@ -1,5 +1,5 @@
 // portfolioService.ts - API service for portfolio operations
-import { Portfolio, PortfolioCreate, PortfolioUpdate, ApiError } from './types';
+import { Portfolio, PortfolioCreate, PortfolioUpdate, ApiError, HoldingCreate, Holding } from './types';
 
 const API_BASE_URL = 'http://localhost:8000/portfolios';
 
@@ -74,6 +74,29 @@ class PortfolioService {
     }
     
     return response.json();
+  }
+
+  /**
+   * Add a holding to an existing portfolio
+   */
+  async addHolding(portfolioId: string, data: HoldingCreate): Promise<Holding> {
+    const response = await fetch(`${API_BASE_URL}/${portfolioId}/holdings`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Failed to add holding');
+    }
+
+    // The backend returns { message, added }
+    const result = await response.json();
+    return result.added;
   }
 
   /**
