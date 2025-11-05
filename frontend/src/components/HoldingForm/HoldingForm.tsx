@@ -36,6 +36,12 @@ export default function HoldingForm({ portfolioId, onSuccess }: HoldingFormProps
     setLoading(true);
     setMessage({ type: '', text: '' });
 
+    if (formData.symbol.length < 3 || formData.symbol.length > 4) {
+      setMessage({ type: 'error', text: 'Ticker symbol must be 3-4 characters long.' });
+      setLoading(false);
+      return;
+    }
+
     try {
       await portfolioService.addHolding(portfolioId, {
         ...formData,
@@ -74,7 +80,7 @@ export default function HoldingForm({ portfolioId, onSuccess }: HoldingFormProps
     }));
   };
 
-  const isFormValid = formData.symbol && formData.shares > 0 && formData.purchasePrice > 0 && formData.purchaseDate;
+  const isFormValid = formData.symbol.length >= 3 && formData.symbol.length <= 4 && formData.shares > 0 && formData.purchasePrice > 0 && formData.purchaseDate;
 
   return (
     <div className="holding-form-container">
@@ -92,7 +98,7 @@ export default function HoldingForm({ portfolioId, onSuccess }: HoldingFormProps
             value={formData.symbol}
             onChange={handleChange}
             required
-            maxLength={10}
+            maxLength={4}
             className="form-input"
             placeholder="e.g., AAPL"
           />

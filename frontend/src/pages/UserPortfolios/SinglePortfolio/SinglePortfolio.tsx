@@ -75,6 +75,9 @@ const SinglePortfolio = () => {
           <HoldingForm portfolioId={portfolio.id} onSuccess={fetchPortfolio} />
         </aside>
       </main>
+      <div className="analyze-button-container">
+        <button className="analyze-button">Analyze Portfolio</button>
+      </div>
     </div>
   );
 };
