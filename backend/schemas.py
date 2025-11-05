@@ -9,12 +9,9 @@ class UserCreate(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
-    username: Optional[str] = None
+    username: Optional[str] = None  # ✅ stops 400 issues
 
 class UserResponse(BaseModel):
     email: EmailStr
-    username: Optional[str] = None
+    username: str
     full_name: Optional[str] = None
-
-    class Config:
-        orm_mode = True

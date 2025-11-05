@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 
 interface User {
   email: string;
@@ -10,7 +10,7 @@ interface User {
 interface AuthContextType {
   token: string | null;
   user: User | null;
-  login: (token: string) => Promise<void>;
+  login: (token: string, user: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
   loading: boolean;
@@ -18,22 +18,22 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = "http://localhost:8000/api";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+  const [user, setUser] = useState<User | null>(
+    localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initAuth = async () => {
-      const storedToken = localStorage.getItem('token');
+      const storedToken = localStorage.getItem("token");
       if (storedToken) {
         try {
-          const response = await fetch(`${API_BASE}/users/me`, {
-            headers: {
-              'Authorization': `Bearer ${storedToken}`,
-            },
+          const response = await fetch(`${API_BASE}/me`, {
+            headers: { Authorization: `Bearer ${storedToken}` },
           });
 
           if (response.ok) {
@@ -41,67 +41,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(userData);
             setToken(storedToken);
           } else {
-            // Token invalid, clear it
-            localStorage.removeItem('token');
-            setToken(null);
-            setUser(null);
+            logout();
           }
-        } catch (error) {
-          console.error('Auth check failed:', error);
-          localStorage.removeItem('token');
-          setToken(null);
-          setUser(null);
+        } catch {
+          logout();
         }
       }
       setLoading(false);
     };
-
     initAuth();
   }, []);
 
-  const login = async (newToken: string) => {
-    localStorage.setItem('token', newToken);
+  const login = (newToken: string, userData: User) => {
+    localStorage.setItem("token", newToken);
+    localStorage.setItem("user", JSON.stringify(userData));
     setToken(newToken);
-
-    try {
-      const response = await fetch(`${API_BASE}/users/me`, {
-        headers: {
-          'Authorization': `Bearer ${newToken}`,
-        },
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      }
-    } catch (error) {
-      console.error('Failed to fetch user data:', error);
-    }
+    setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
   };
 
-  const value = {
-    token,
-    user,
-    login,
-    logout,
-    isAuthenticated: !!token,
-    loading,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{
+      token, user, login, logout,
+      isAuthenticated: !!token,
+      loading
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+  return ctx;
 }
-

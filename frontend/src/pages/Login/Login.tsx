@@ -1,95 +1,48 @@
 import { useState } from "react";
-import type { FormEvent, ChangeEvent } from "react";
-import "./Login.css"; // Import external CSS
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import "./Login.css";
 
 function Login() {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [email,     setEmail]     = useState("");
+  const [password,  setPassword]  = useState("");
+  const [message,   setMessage]   = useState("");
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    try {
-      const res = await fetch("http://localhost:8000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      });
+    const res = await fetch("http://localhost:8000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
+    if (!res.ok) return setMessage(data.detail || "Login failed");
 
-      if (!res.ok) {
-        setMessage(data.message || data.detail || "Login failed");
-        return;
-      }
-
-      setMessage("✅ Login successful!");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-    } catch (error) {
-      console.error(error);
-      setMessage("⚠️ Server error. Try again later.");
-    }
+    login(data.access_token, data.user);
+    setMessage("✅ Login successful!");
+    navigate("/dashboard");
   };
 
   return (
     <div className="body">
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">Sign In</h2>
+      <div className="login-container">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <h2 className="login-title">Sign In</h2>
 
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setUsername(e.target.value)
-            }
-            placeholder="Enter username"
-            required
-          />
-        </div>
+          <input placeholder="Username"  value={username} onChange={(e)=>setUsername(e.target.value)} />
+          <input placeholder="Email"     value={email}    onChange={(e)=>setEmail(e.target.value)} />
+          <input placeholder="Password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />
 
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-            placeholder="Enter email"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setPassword(e.target.value)
-            }
-            placeholder="Enter password"
-            required
-          />
-        </div>
-
-        <button className="login-button" type="submit">
-          Sign In
-        </button>
-
-        {message && <p className="login-message">{message}</p>}
-      </form>
-    </div>
+          <button className="login-button" type="submit">Sign In</button>
+          {message && <p className="login-message">{message}</p>}
+        </form>
+      </div>
     </div>
   );
 }
