@@ -51,8 +51,7 @@ Response: {
 POST /api/users/login
 Body: {
   "email": "user@example.com",
-  "password": "Test1234",
-  "username": "testuser" // optional
+  "password": "Test1234"
 }
 Response: {
   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
@@ -551,4 +550,3 @@ OPENAI_MODEL=gpt-4  # or gpt-3.5-turbo
 
 **Last Updated**: 2024
 **Audit Status**: ✅ Complete
-
