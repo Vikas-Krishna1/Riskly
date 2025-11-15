@@ -124,18 +124,107 @@ async def get_portfolio_analytics(
     # Returns
     returns = portfolio_values['Total'].pct_change().dropna()
     
-    # Analytics
+    # Basic Analytics
     daily_return = returns.mean()
     volatility = returns.std()
     sharpe_ratio = (daily_return / volatility * np.sqrt(252)) if volatility != 0 else 0.0  # Annualized
     
+    # Additional Metrics
+    # Maximum Drawdown
+    cumulative = (1 + returns).cumprod()
+    running_max = cumulative.expanding().max()
+    drawdown = (cumulative - running_max) / running_max
+    max_drawdown = drawdown.min()
+    
+    # Sortino Ratio (downside deviation)
+    downside_returns = returns[returns < 0]
+    downside_std = downside_returns.std() if len(downside_returns) > 0 else 0.0
+    sortino_ratio = (daily_return / downside_std * np.sqrt(252)) if downside_std != 0 else 0.0
+    
+    # Calmar Ratio (annualized return / max drawdown)
+    annualized_return = daily_return * 252
+    calmar_ratio = (annualized_return / abs(max_drawdown)) if max_drawdown != 0 else 0.0
+    
+    # Total Return
+    initial_value = portfolio_values['Total'].iloc[0]
+    final_value = portfolio_values['Total'].iloc[-1]
+    total_return = ((final_value - initial_value) / initial_value) if initial_value != 0 else 0.0
+    
+    # Win Rate (percentage of profitable holdings)
+    profitable_holdings = sum(1 for h in holdings_analytics if h['gainLoss'] > 0)
+    win_rate = (profitable_holdings / len(holdings_analytics) * 100) if len(holdings_analytics) > 0 else 0.0
+    
+    # Best and Worst Performing Holdings
+    best_holding = max(holdings_analytics, key=lambda x: x['gainLoss']) if holdings_analytics else None
+    worst_holding = min(holdings_analytics, key=lambda x: x['gainLoss']) if holdings_analytics else None
+    
+    # Portfolio Concentration (Herfindahl Index)
+    total_value = sum(h['currentValue'] for h in holdings_analytics)
+    concentration = sum((h['currentValue'] / total_value) ** 2 for h in holdings_analytics) if total_value > 0 else 0.0
+    
+    # Value at Risk (VaR) - 95% confidence
+    var_95 = returns.quantile(0.05) if len(returns) > 0 else 0.0
+    
+    # Expected Shortfall (Conditional VaR)
+    expected_shortfall = returns[returns <= var_95].mean() if len(returns[returns <= var_95]) > 0 else 0.0
+    
+    # Beta (correlation with market - using SPY as proxy)
+    market_returns = None
+    beta = 0.0
+    try:
+        market_data = yf.Ticker("SPY").history(period="1y", auto_adjust=True)
+        if not market_data.empty and 'Close' in market_data.columns:
+            market_returns = market_data['Close'].pct_change().dropna()
+            # Align dates
+            aligned_returns = returns.reindex(market_returns.index).dropna()
+            aligned_market = market_returns.reindex(aligned_returns.index).dropna()
+            if len(aligned_returns) > 1 and len(aligned_market) > 1:
+                market_var = aligned_market.var()
+                beta = (aligned_returns.cov(aligned_market) / market_var) if market_var != 0 else 0.0
+    except:
+        beta = 0.0
+    
+    # Alpha (excess return over market)
+    if market_returns is not None:
+        market_annual_return = market_returns.mean() * 252
+        alpha = annualized_return - (beta * market_annual_return)
+    else:
+        alpha = 0.0
+    
+    # Information Ratio
+    if market_returns is not None:
+        aligned_market_for_ir = market_returns.reindex(returns.index).fillna(0)
+        tracking_error = (returns - aligned_market_for_ir).std()
+        excess_return = returns.mean() - aligned_market_for_ir.mean()
+        information_ratio = (excess_return / tracking_error * np.sqrt(252)) if tracking_error != 0 else 0.0
+    else:
+        information_ratio = 0.0
+    
+    # Treynor Ratio
+    treynor_ratio = (annualized_return / beta) if beta != 0 else 0.0
+    
     # Handle NaN/Inf values
-    if pd.isna(daily_return) or np.isinf(daily_return):
-        daily_return = 0.0
-    if pd.isna(volatility) or np.isinf(volatility):
-        volatility = 0.0
-    if pd.isna(sharpe_ratio) or np.isinf(sharpe_ratio):
-        sharpe_ratio = 0.0
+    def safe_float(value):
+        if pd.isna(value) or np.isinf(value):
+            return 0.0
+        return float(value)
+    
+    daily_return = safe_float(daily_return)
+    volatility = safe_float(volatility)
+    sharpe_ratio = safe_float(sharpe_ratio)
+    max_drawdown = safe_float(max_drawdown)
+    sortino_ratio = safe_float(sortino_ratio)
+    calmar_ratio = safe_float(calmar_ratio)
+    total_return = safe_float(total_return)
+    win_rate = safe_float(win_rate)
+    concentration = safe_float(concentration)
+    var_95 = safe_float(var_95)
+    expected_shortfall = safe_float(expected_shortfall)
+    beta = safe_float(beta)
+    alpha = safe_float(alpha)
+    information_ratio = safe_float(information_ratio)
+    treynor_ratio = safe_float(treynor_ratio)
+    annualized_return = safe_float(annualized_return)
 
     # Format historical value with proper date serialization
     historical_df = portfolio_values[['Total']].reset_index()
@@ -147,10 +236,33 @@ async def get_portfolio_analytics(
         "portfolioName": portfolio['name'],
         "totalPortfolioValue": float(total_portfolio_value),
         "analytics": {
-            "dailyReturn": float(daily_return),
-            "volatility": float(volatility),
-            "sharpeRatio": float(sharpe_ratio)
+            "dailyReturn": daily_return,
+            "volatility": volatility,
+            "sharpeRatio": sharpe_ratio,
+            "maxDrawdown": max_drawdown,
+            "sortinoRatio": sortino_ratio,
+            "calmarRatio": calmar_ratio,
+            "totalReturn": total_return,
+            "annualizedReturn": annualized_return,
+            "winRate": win_rate,
+            "concentration": concentration,
+            "valueAtRisk": var_95,
+            "expectedShortfall": expected_shortfall,
+            "beta": beta,
+            "alpha": alpha,
+            "informationRatio": information_ratio,
+            "treynorRatio": treynor_ratio
         },
         "holdings": holdings_analytics,
-        "historicalValue": historical_value
+        "historicalValue": historical_value,
+        "bestHolding": {
+            "symbol": best_holding['symbol'],
+            "gainLoss": best_holding['gainLoss'],
+            "gainLossPercent": ((best_holding['gainLoss'] / best_holding['purchaseValue']) * 100) if best_holding['purchaseValue'] != 0 else 0.0
+        } if best_holding else None,
+        "worstHolding": {
+            "symbol": worst_holding['symbol'],
+            "gainLoss": worst_holding['gainLoss'],
+            "gainLossPercent": ((worst_holding['gainLoss'] / worst_holding['purchaseValue']) * 100) if worst_holding['purchaseValue'] != 0 else 0.0
+        } if worst_holding else None
     }

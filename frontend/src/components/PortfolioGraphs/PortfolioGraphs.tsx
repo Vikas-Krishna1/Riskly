@@ -22,6 +22,19 @@ interface PortfolioAnalytics {
     dailyReturn: number;
     volatility: number;
     sharpeRatio: number;
+    maxDrawdown: number;
+    sortinoRatio: number;
+    calmarRatio: number;
+    totalReturn: number;
+    annualizedReturn: number;
+    winRate: number;
+    concentration: number;
+    valueAtRisk: number;
+    expectedShortfall: number;
+    beta: number;
+    alpha: number;
+    informationRatio: number;
+    treynorRatio: number;
   };
   holdings: {
     symbol: string;
@@ -36,13 +49,24 @@ interface PortfolioAnalytics {
     Date: string;
     Total: number;
   }[];
+  bestHolding?: {
+    symbol: string;
+    gainLoss: number;
+    gainLossPercent: number;
+  };
+  worstHolding?: {
+    symbol: string;
+    gainLoss: number;
+    gainLossPercent: number;
+  };
 }
 
 interface PortfolioGraphsProps {
   analytics: PortfolioAnalytics;
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#ff7300'];
+// Dark theme colors matching the site
+const COLORS = ['#3b82f6', '#60a5fa', '#818cf8', '#a78bfa', '#34d399', '#22c55e', '#fbbf24', '#fb923c'];
 
 export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
   // Format historical data for the chart
@@ -103,9 +127,15 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
 
       {/* Metrics Cards */}
       <div className="metrics-grid">
-        <div className="metric-card">
+        <div className="metric-card primary-card">
           <div className="metric-label">Total Portfolio Value</div>
           <div className="metric-value primary">{formatCurrency(analytics.totalPortfolioValue)}</div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-label">Total Return</div>
+          <div className={`metric-value ${analytics.analytics.totalReturn >= 0 ? 'positive' : 'negative'}`}>
+            {(analytics.analytics.totalReturn * 100).toFixed(2)}%
+          </div>
         </div>
         <div className="metric-card">
           <div className="metric-label">Total Gain/Loss</div>
@@ -114,29 +144,87 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
           </div>
         </div>
         <div className="metric-card">
-          <div className="metric-label">Avg. Daily Return</div>
-          <div className="metric-value">
-            {(analytics.analytics.dailyReturn * 100).toFixed(4)}%
-          </div>
-        </div>
-        <div className="metric-card">
-          <div className="metric-label">Volatility</div>
-          <div className="metric-value">
-            {(analytics.analytics.volatility * 100).toFixed(4)}%
+          <div className="metric-label">Annualized Return</div>
+          <div className={`metric-value ${analytics.analytics.annualizedReturn >= 0 ? 'positive' : 'negative'}`}>
+            {(analytics.analytics.annualizedReturn * 100).toFixed(2)}%
           </div>
         </div>
         <div className="metric-card">
           <div className="metric-label">Sharpe Ratio</div>
           <div className="metric-value">
-            {analytics.analytics.sharpeRatio.toFixed(4)}
+            {analytics.analytics.sharpeRatio.toFixed(3)}
           </div>
         </div>
         <div className="metric-card">
-          <div className="metric-label">Number of Holdings</div>
+          <div className="metric-label">Sortino Ratio</div>
           <div className="metric-value">
-            {analytics.holdings.length}
+            {analytics.analytics.sortinoRatio.toFixed(3)}
           </div>
         </div>
+        <div className="metric-card">
+          <div className="metric-label">Max Drawdown</div>
+          <div className="metric-value negative">
+            {(analytics.analytics.maxDrawdown * 100).toFixed(2)}%
+          </div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-label">Calmar Ratio</div>
+          <div className="metric-value">
+            {analytics.analytics.calmarRatio.toFixed(3)}
+          </div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-label">Volatility</div>
+          <div className="metric-value">
+            {(analytics.analytics.volatility * 100).toFixed(2)}%
+          </div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-label">Win Rate</div>
+          <div className="metric-value">
+            {analytics.analytics.winRate.toFixed(1)}%
+          </div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-label">Beta</div>
+          <div className="metric-value">
+            {analytics.analytics.beta.toFixed(3)}
+          </div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-label">Alpha</div>
+          <div className={`metric-value ${analytics.analytics.alpha >= 0 ? 'positive' : 'negative'}`}>
+            {(analytics.analytics.alpha * 100).toFixed(2)}%
+          </div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-label">Value at Risk (95%)</div>
+          <div className="metric-value negative">
+            {(analytics.analytics.valueAtRisk * 100).toFixed(2)}%
+          </div>
+        </div>
+        <div className="metric-card">
+          <div className="metric-label">Concentration</div>
+          <div className="metric-value">
+            {(analytics.analytics.concentration * 100).toFixed(1)}%
+          </div>
+        </div>
+        {analytics.bestHolding && (
+          <div className="metric-card highlight-card">
+            <div className="metric-label">Best Performer</div>
+            <div className="metric-value positive">
+              {analytics.bestHolding.symbol}: {formatCurrency(analytics.bestHolding.gainLoss)} ({analytics.bestHolding.gainLossPercent.toFixed(2)}%)
+            </div>
+          </div>
+        )}
+        {analytics.worstHolding && (
+          <div className="metric-card highlight-card">
+            <div className="metric-label">Worst Performer</div>
+            <div className="metric-value negative">
+              {analytics.worstHolding.symbol}: {formatCurrency(analytics.worstHolding.gainLoss)} ({analytics.worstHolding.gainLossPercent.toFixed(2)}%)
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Historical Portfolio Value Chart */}
@@ -144,18 +232,18 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
         <h3 className="chart-title">Portfolio Value Over Time</h3>
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={historicalData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(59, 130, 246, 0.1)" />
             <XAxis
               dataKey="date"
-              stroke="#666"
-              tick={{ fill: '#666', fontSize: 12 }}
+              stroke="#94a3b8"
+              tick={{ fill: '#94a3b8', fontSize: 12 }}
               angle={-45}
               textAnchor="end"
               height={80}
             />
             <YAxis
-              stroke="#666"
-              tick={{ fill: '#666', fontSize: 12 }}
+              stroke="#94a3b8"
+              tick={{ fill: '#94a3b8', fontSize: 12 }}
               tickFormatter={(value) => formatCurrency(value)}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -163,11 +251,11 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
             <Line
               type="monotone"
               dataKey="value"
-              stroke="#0088FE"
+              stroke="#3b82f6"
               strokeWidth={2}
               dot={false}
               name="Portfolio Value"
-              activeDot={{ r: 6 }}
+              activeDot={{ r: 6, fill: '#60a5fa' }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -204,11 +292,11 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
           <h3 className="chart-title">Gain/Loss by Holding</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={gainLossData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis dataKey="symbol" stroke="#666" tick={{ fill: '#666', fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(59, 130, 246, 0.1)" />
+              <XAxis dataKey="symbol" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
               <YAxis
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
+                stroke="#94a3b8"
+                tick={{ fill: '#94a3b8', fontSize: 12 }}
                 tickFormatter={(value) => formatCurrency(value)}
               />
               <Tooltip
@@ -220,7 +308,7 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
                 {gainLossData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={entry.gainLoss >= 0 ? '#00C49F' : '#FF8042'}
+                    fill={entry.gainLoss >= 0 ? '#22c55e' : '#ef4444'}
                   />
                 ))}
               </Bar>

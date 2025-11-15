@@ -15,6 +15,19 @@ interface PortfolioAnalytics {
     dailyReturn: number;
     volatility: number;
     sharpeRatio: number;
+    maxDrawdown: number;
+    sortinoRatio: number;
+    calmarRatio: number;
+    totalReturn: number;
+    annualizedReturn: number;
+    winRate: number;
+    concentration: number;
+    valueAtRisk: number;
+    expectedShortfall: number;
+    beta: number;
+    alpha: number;
+    informationRatio: number;
+    treynorRatio: number;
   };
   holdings: {
     symbol: string;
@@ -29,6 +42,16 @@ interface PortfolioAnalytics {
     Date: string;
     Total: number;
   }[];
+  bestHolding?: {
+    symbol: string;
+    gainLoss: number;
+    gainLossPercent: number;
+  };
+  worstHolding?: {
+    symbol: string;
+    gainLoss: number;
+    gainLossPercent: number;
+  };
 }
 
 const SinglePortfolio = () => {
