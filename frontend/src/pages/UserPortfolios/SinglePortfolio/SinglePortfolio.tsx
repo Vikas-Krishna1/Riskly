@@ -5,6 +5,7 @@ import { portfolioService } from '../../../components/PortfolioForm/portfolioSer
 import { Portfolio } from '../../../components/PortfolioForm/types';
 import HoldingForm from '../../../components/HoldingForm/HoldingForm';
 import PortfolioGraphs from '../../../components/PortfolioGraphs/PortfolioGraphs';
+import AIAnalysisModal from '../../../components/AIAnalysis/AIAnalysisModal';
 import './SinglePortfolio.css';
 
 // Define the type for the analytics data
@@ -61,6 +62,7 @@ const SinglePortfolio = () => {
   const [error, setError] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<PortfolioAnalytics | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
 
   const fetchPortfolio = useCallback(async () => {
     if (!portfolioId) {
@@ -148,7 +150,17 @@ const SinglePortfolio = () => {
       {analytics && (
         <>
           <section className="analytics-section">
-            <h2 className="section-title">Portfolio Analytics</h2>
+            <div className="analytics-header">
+              <h2 className="section-title">Portfolio Analytics</h2>
+              <button
+                className="ai-advice-button"
+                onClick={() => setShowAIModal(true)}
+                title="Get AI-powered investment advice"
+              >
+                <span className="ai-button-icon">🤖</span>
+                Get AI Advice
+              </button>
+            </div>
             <div className="analytics-summary">
               <p><strong>Total Value:</strong> ${analytics.totalPortfolioValue.toFixed(2)}</p>
               <p><strong>Avg. Daily Return:</strong> {(analytics.analytics.dailyReturn * 100).toFixed(4)}%</p>
@@ -171,6 +183,14 @@ const SinglePortfolio = () => {
 
           <PortfolioGraphs analytics={analytics} />
         </>
+      )}
+
+      {portfolioId && (
+        <AIAnalysisModal
+          isOpen={showAIModal}
+          onClose={() => setShowAIModal(false)}
+          portfolioId={portfolioId}
+        />
       )}
     </div>
   );

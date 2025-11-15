@@ -150,6 +150,22 @@ class PortfolioService {
     
     return response.json();
   }
+
+  /**
+   * Fetch AI analysis for a single portfolio by ID
+   */
+  async getAIAnalysis(id: string): Promise<any> {
+    const response = await fetch(`http://localhost:8000/ai-analysis/${id}`, {
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Failed to fetch AI analysis');
+    }
+    
+    return response.json();
+  }
 }
 
 // Export a singleton instance

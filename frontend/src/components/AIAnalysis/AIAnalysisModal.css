@@ -1,0 +1,452 @@
+/* Modal Overlay */
+.ai-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.ai-modal-container {
+  background: #151820;
+  border-radius: 1rem;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 3rem rgba(59, 130, 246, 0.3);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Header */
+.ai-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, #151820 0%, #1a1f35 100%);
+}
+
+.ai-modal-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.ai-modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #60a5fa;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ai-icon {
+  font-size: 1.75rem;
+}
+
+.portfolio-name-badge {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.ai-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.refresh-button,
+.close-button {
+  background: transparent;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #cbd5e1;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.refresh-button:hover,
+.close-button:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.close-button:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+/* Modal Body */
+.ai-modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(59, 130, 246, 0.2);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  color: #60a5fa;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.loading-subtext {
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+/* Error State */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: #fca5a5;
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+.retry-button {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Analysis Content */
+.ai-analysis-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.analysis-section {
+  background: #0f1116;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #60a5fa;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-icon {
+  font-size: 1.5rem;
+}
+
+.assessment-text {
+  color: #cbd5e1;
+  line-height: 1.6;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Strengths and Weaknesses Grid */
+.strengths-weaknesses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.analysis-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.analysis-list-item {
+  color: #cbd5e1;
+  padding: 0.75rem;
+  background: rgba(59, 130, 246, 0.05);
+  border-left: 3px solid #3b82f6;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.strengths-list .analysis-list-item {
+  border-left-color: #22c55e;
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.weaknesses-list .analysis-list-item {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.risk-list .analysis-list-item {
+  border-left-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.05);
+}
+
+.analysis-list-item.empty {
+  color: #94a3b8;
+  font-style: italic;
+  border-left-color: #4a5568;
+  background: transparent;
+}
+
+/* Recommendations */
+.recommendations-section {
+  padding: 1.5rem;
+}
+
+.recommendations-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recommendation-card {
+  background: #0f1116;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.recommendation-card.priority-high {
+  border-left: 4px solid #ef4444;
+}
+
+.recommendation-card.priority-medium {
+  border-left: 4px solid #fbbf24;
+}
+
+.recommendation-card.priority-low {
+  border-left: 4px solid #22c55e;
+}
+
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.recommendation-number {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.recommendation-priority {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.priority-high .recommendation-priority {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.priority-medium .recommendation-priority {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fcd34d;
+}
+
+.priority-low .recommendation-priority {
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+.priority-icon {
+  font-size: 0.875rem;
+}
+
+.recommendation-category {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 0.5rem;
+  margin-left: auto;
+}
+
+.recommendation-content {
+  margin-top: 0.75rem;
+}
+
+.recommendation-action {
+  color: #e2e8f0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.recommendation-rationale {
+  color: #cbd5e1;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.empty-message {
+  color: #94a3b8;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ai-modal-overlay {
+    padding: 1rem;
+  }
+
+  .ai-modal-container {
+    max-height: 95vh;
+  }
+
+  .ai-modal-header {
+    padding: 1rem 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .ai-modal-title {
+    font-size: 1.25rem;
+  }
+
+  .ai-modal-body {
+    padding: 1.5rem;
+  }
+
+  .strengths-weaknesses-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recommendation-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .recommendation-category {
+    margin-left: 0;
+  }
+}
+
