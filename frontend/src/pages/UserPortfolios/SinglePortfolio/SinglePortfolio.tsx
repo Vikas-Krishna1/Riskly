@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { portfolioService } from '../../../components/PortfolioForm/portfolioService';
 import { Portfolio } from '../../../components/PortfolioForm/types';
 import HoldingForm from '../../../components/HoldingForm/HoldingForm';
+import PortfolioGraphs from '../../../components/PortfolioGraphs/PortfolioGraphs';
 import './SinglePortfolio.css';
 
 // Define the type for the analytics data
@@ -122,27 +123,31 @@ const SinglePortfolio = () => {
       </div>
 
       {analytics && (
-        <section className="analytics-section">
-          <h2 className="section-title">Portfolio Analytics</h2>
-          <div className="analytics-summary">
-            <p><strong>Total Value:</strong> ${analytics.totalPortfolioValue.toFixed(2)}</p>
-            <p><strong>Avg. Daily Return:</strong> {(analytics.analytics.dailyReturn * 100).toFixed(4)}%</p>
-            <p><strong>Volatility:</strong> {(analytics.analytics.volatility * 100).toFixed(4)}%</p>
-            <p><strong>Sharpe Ratio:</strong> {analytics.analytics.sharpeRatio.toFixed(4)}</p>
-          </div>
+        <>
+          <section className="analytics-section">
+            <h2 className="section-title">Portfolio Analytics</h2>
+            <div className="analytics-summary">
+              <p><strong>Total Value:</strong> ${analytics.totalPortfolioValue.toFixed(2)}</p>
+              <p><strong>Avg. Daily Return:</strong> {(analytics.analytics.dailyReturn * 100).toFixed(4)}%</p>
+              <p><strong>Volatility:</strong> {(analytics.analytics.volatility * 100).toFixed(4)}%</p>
+              <p><strong>Sharpe Ratio:</strong> {analytics.analytics.sharpeRatio.toFixed(4)}</p>
+            </div>
 
-          <h3 className="subsection-title">Analyzed Holdings</h3>
-          <ul className="holdings-list">
-            {analytics.holdings.map((holding) => (
-              <li key={holding.symbol} className="holding-item">
-                <span className="holding-symbol">{holding.symbol}</span>
-                <span className="holding-details">
-                  {holding.shares} shares | Current Value: ${holding.currentValue.toFixed(2)} | Gain/Loss: ${holding.gainLoss.toFixed(2)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
+            <h3 className="subsection-title">Analyzed Holdings</h3>
+            <ul className="holdings-list">
+              {analytics.holdings.map((holding) => (
+                <li key={holding.symbol} className="holding-item">
+                  <span className="holding-symbol">{holding.symbol}</span>
+                  <span className="holding-details">
+                    {holding.shares} shares | Current Value: ${holding.currentValue.toFixed(2)} | Gain/Loss: ${holding.gainLoss.toFixed(2)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <PortfolioGraphs analytics={analytics} />
+        </>
       )}
     </div>
   );
