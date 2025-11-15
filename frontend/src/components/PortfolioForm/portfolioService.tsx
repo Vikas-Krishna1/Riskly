@@ -100,6 +100,44 @@ class PortfolioService {
   }
 
   /**
+   * Update an existing holding in a portfolio
+   */
+  async updateHolding(portfolioId: string, holdingId: string, data: HoldingUpdate): Promise<Holding> {
+    const response = await fetch(`${API_BASE_URL}/${portfolioId}/holdings/${holdingId}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Failed to update holding');
+    }
+
+    // The backend returns { message, updated }
+    const result = await response.json();
+    return result.updated;
+  }
+
+  /**
+   * Delete a holding from a portfolio
+   */
+  async deleteHolding(portfolioId: string, holdingId: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/${portfolioId}/holdings/${holdingId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Failed to delete holding');
+    }
+  }
+
+  /**
    * Update an existing portfolio
    */
   async update(id: string, data: PortfolioUpdate): Promise<Portfolio> {

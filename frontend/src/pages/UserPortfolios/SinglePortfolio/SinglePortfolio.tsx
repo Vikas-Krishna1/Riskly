@@ -2,8 +2,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { portfolioService } from '../../../components/PortfolioForm/portfolioService';
-import { Portfolio } from '../../../components/PortfolioForm/types';
+import { Portfolio, Holding } from '../../../components/PortfolioForm/types';
 import HoldingForm from '../../../components/HoldingForm/HoldingForm';
+import EditHoldingModal from '../../../components/HoldingForm/EditHoldingModal';
 import PortfolioGraphs from '../../../components/PortfolioGraphs/PortfolioGraphs';
 import AIAnalysisModal from '../../../components/AIAnalysis/AIAnalysisModal';
 import './SinglePortfolio.css';
@@ -56,13 +57,16 @@ interface PortfolioAnalytics {
 }
 
 const SinglePortfolio = () => {
-  const { userId, portfolioId } = useParams<{ userId: string; portfolioId: string }>();
+  const { portfolioId } = useParams<{ userId: string; portfolioId: string }>();
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<PortfolioAnalytics | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [editingHolding, setEditingHolding] = useState<Holding | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [deletingHoldingId, setDeletingHoldingId] = useState<string | null>(null);
 
   const fetchPortfolio = useCallback(async () => {
     if (!portfolioId) {
@@ -100,6 +104,45 @@ const SinglePortfolio = () => {
     }
   };
 
+  const handleEditHolding = (holding: Holding) => {
+    setEditingHolding(holding);
+    setShowEditModal(true);
+  };
+
+  const handleDeleteHolding = async (holdingId: string, symbol: string) => {
+    if (!portfolioId) return;
+    
+    if (!confirm(`Are you sure you want to delete ${symbol}? This action cannot be undone.`)) {
+      return;
+    }
+
+    setDeletingHoldingId(holdingId);
+    setError(null);
+    
+    try {
+      await portfolioService.deleteHolding(portfolioId, holdingId);
+      await fetchPortfolio(); // Refresh portfolio data
+      if (analytics) {
+        // Refresh analytics if they're loaded
+        await handleAnalyze();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete holding');
+    } finally {
+      setDeletingHoldingId(null);
+    }
+  };
+
+  const handleEditSuccess = async () => {
+    await fetchPortfolio(); // Refresh portfolio data
+    if (analytics) {
+      // Refresh analytics if they're loaded
+      await handleAnalyze();
+    }
+    setShowEditModal(false);
+    setEditingHolding(null);
+  };
+
   if (loading) {
     return <div className="loading-message">Loading portfolio...</div>;
   }
@@ -126,9 +169,29 @@ const SinglePortfolio = () => {
             <ul className="holdings-list">
               {portfolio.holdings.map((holding) => (
                 <li key={holding.id} className="holding-item">
-                  <span className="holding-symbol">{holding.symbol}</span>
-                  <span className="holding-details">{holding.shares} shares @ ${holding.purchasePrice.toFixed(2)}</span>
-                  <span className="holding-date">Purchased: {new Date(holding.purchaseDate).toLocaleDateString()}</span>
+                  <div className="holding-info">
+                    <span className="holding-symbol">{holding.symbol}</span>
+                    <span className="holding-details">{holding.shares} shares @ ${holding.purchasePrice.toFixed(2)}</span>
+                    <span className="holding-date">Purchased: {new Date(holding.purchaseDate).toLocaleDateString()}</span>
+                  </div>
+                  <div className="holding-actions">
+                    <button
+                      className="edit-holding-button"
+                      onClick={() => handleEditHolding(holding)}
+                      title="Edit holding"
+                      disabled={deletingHoldingId === holding.id}
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      className="delete-holding-button"
+                      onClick={() => handleDeleteHolding(holding.id, holding.symbol)}
+                      title="Delete holding"
+                      disabled={deletingHoldingId === holding.id}
+                    >
+                      {deletingHoldingId === holding.id ? '⏳' : '🗑️'}
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -190,6 +253,19 @@ const SinglePortfolio = () => {
           isOpen={showAIModal}
           onClose={() => setShowAIModal(false)}
           portfolioId={portfolioId}
+        />
+      )}
+
+      {portfolioId && editingHolding && (
+        <EditHoldingModal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditingHolding(null);
+          }}
+          portfolioId={portfolioId}
+          holding={editingHolding}
+          onSuccess={handleEditSuccess}
         />
       )}
     </div>

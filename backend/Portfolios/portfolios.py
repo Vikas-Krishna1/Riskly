@@ -4,7 +4,7 @@ from bson import ObjectId
 from datetime import datetime, timedelta
 from typing import List
 from database import get_portfolio_collection
-from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate, HoldingAdd
+from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate, HoldingAdd, HoldingUpdate
 from auth import get_current_user
 
 portfolio_router = APIRouter(prefix="/portfolios", tags=["Portfolios"])
@@ -201,6 +201,139 @@ async def add_holding(
     return {
         "message": "Holding successfully created!",
         "added": newHolding
+    }
+
+@portfolio_router.put("/{portfolio_id}/holdings/{holding_id}")
+async def update_holding(
+    portfolio_id: str,
+    holding_id: str,
+    holding_update: HoldingUpdate,
+    current_user: dict = Depends(get_current_user)
+):
+    portfolios = get_portfolio_collection()
+
+    # Find the portfolio by ID
+    portfolio = await portfolios.find_one({"_id": ObjectId(portfolio_id)})
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+
+    # Security: verify ownership
+    if str(portfolio["userId"]) != current_user["id"]:
+        raise HTTPException(status_code=403, detail="You don't have access to this portfolio")
+
+    # Find the holding in the portfolio
+    holdings = portfolio.get("holdings", [])
+    holding_index = None
+    holding = None
+    
+    for i, h in enumerate(holdings):
+        if h.get("id") == holding_id:
+            holding_index = i
+            holding = h
+            break
+    
+    if holding_index is None or holding is None:
+        raise HTTPException(status_code=404, detail="Holding not found")
+
+    # Build update data
+    updated_holding = holding.copy()
+    
+    # Determine the purchase date to use (either updated or existing)
+    purchase_date = holding.get("purchaseDate")
+    if holding_update.purchaseDate:
+        # New purchase date provided
+        purchase_date = datetime.strptime(holding_update.purchaseDate, "%Y-%m-%d")
+    elif isinstance(purchase_date, str):
+        # Existing date is a string, parse it
+        purchase_date = datetime.strptime(purchase_date, "%Y-%m-%d")
+    elif isinstance(purchase_date, datetime):
+        # Already a datetime object
+        pass
+    else:
+        # Fallback to current date
+        purchase_date = datetime.utcnow()
+
+    # If symbol or purchaseDate changed, fetch new price
+    symbol_changed = holding_update.symbol and holding_update.symbol != holding["symbol"]
+    date_changed = holding_update.purchaseDate is not None
+    
+    if symbol_changed or date_changed:
+        symbol = holding_update.symbol if holding_update.symbol else holding["symbol"]
+        try:
+            ticker = yf.Ticker(symbol)
+            history = ticker.history(start=purchase_date, end=purchase_date + timedelta(days=1))
+            if history.empty:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Could not find symbol or price for date: {symbol}, {purchase_date.strftime('%Y-%m-%d')}"
+                )
+            price_on_date = history['Close'].iloc[-1]
+            updated_holding["purchasePrice"] = price_on_date
+        except Exception as e:
+            if isinstance(e, HTTPException):
+                raise e
+            raise HTTPException(status_code=500, detail=f"Failed to fetch stock data: {e}")
+
+    # Update fields
+    if holding_update.symbol:
+        updated_holding["symbol"] = holding_update.symbol
+    if holding_update.shares is not None:
+        updated_holding["shares"] = holding_update.shares
+    if holding_update.purchaseDate:
+        updated_holding["purchaseDate"] = purchase_date
+
+    # Update the holding in the array
+    holdings[holding_index] = updated_holding
+
+    # Update the portfolio
+    await portfolios.update_one(
+        {"_id": ObjectId(portfolio_id)},
+        {"$set": {"holdings": holdings}}
+    )
+
+    return {
+        "message": "Holding updated successfully",
+        "updated": updated_holding
+    }
+
+@portfolio_router.delete("/{portfolio_id}/holdings/{holding_id}")
+async def delete_holding(
+    portfolio_id: str,
+    holding_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    portfolios = get_portfolio_collection()
+
+    # Find the portfolio by ID
+    portfolio = await portfolios.find_one({"_id": ObjectId(portfolio_id)})
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+
+    # Security: verify ownership
+    if str(portfolio["userId"]) != current_user["id"]:
+        raise HTTPException(status_code=403, detail="You don't have access to this portfolio")
+
+    # Find and remove the holding
+    holdings = portfolio.get("holdings", [])
+    holding_found = False
+    
+    for i, h in enumerate(holdings):
+        if h.get("id") == holding_id:
+            holdings.pop(i)
+            holding_found = True
+            break
+    
+    if not holding_found:
+        raise HTTPException(status_code=404, detail="Holding not found")
+
+    # Update the portfolio
+    await portfolios.update_one(
+        {"_id": ObjectId(portfolio_id)},
+        {"$set": {"holdings": holdings}}
+    )
+
+    return {
+        "message": "Holding deleted successfully"
     }
 
     
