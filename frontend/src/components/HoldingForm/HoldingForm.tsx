@@ -1,17 +1,7 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { portfolioService } from '../PortfolioForm/portfolioService';
-import { HoldingAdd } from '../PortfolioForm/types';
+import { HoldingAdd, Message, HoldingFormProps } from './types';
 import './HoldingForm.css';
-
-interface Message {
-  type: 'success' | 'error' | '';
-  text: string;
-}
-
-interface HoldingFormProps {
-  portfolioId: string;
-  onSuccess?: () => void;
-}
 
 const getTodayDateString = () => {
   const today = new Date();

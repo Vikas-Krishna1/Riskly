@@ -48,6 +48,7 @@ export interface HoldingAdd {
 }
 
 export interface HoldingUpdate {
+  symbol?: string;
   shares?: number;
   purchasePrice?: number;
   purchaseDate?: string;

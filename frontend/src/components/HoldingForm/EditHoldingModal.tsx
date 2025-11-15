@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { portfolioService } from '../PortfolioForm/portfolioService';
-import { Holding, HoldingUpdate } from '../PortfolioForm/types';
+import { Holding, HoldingUpdate } from './types';
 import './EditHoldingModal.css';
 
 interface EditHoldingModalProps {
