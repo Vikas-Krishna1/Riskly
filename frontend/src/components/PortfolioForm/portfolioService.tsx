@@ -1,5 +1,5 @@
 // portfolioService.ts - API service for portfolio operations
-import { Portfolio, PortfolioCreate, PortfolioUpdate, ApiError, HoldingCreate, Holding } from './types';
+import { Portfolio, PortfolioCreate, PortfolioUpdate, ApiError, HoldingCreate, Holding, HoldingAdd } from './types';
 
 const API_BASE_URL = 'http://localhost:8000/portfolios';
 
@@ -79,7 +79,7 @@ class PortfolioService {
   /**
    * Add a holding to an existing portfolio
    */
-  async addHolding(portfolioId: string, data: HoldingCreate): Promise<Holding> {
+  async addHolding(portfolioId: string, data: HoldingAdd): Promise<Holding> {
     const response = await fetch(`${API_BASE_URL}/${portfolioId}/holdings`, {
       method: 'POST',
       credentials: 'include',
@@ -133,6 +133,22 @@ class PortfolioService {
       const error: ApiError = await response.json();
       throw new Error(error.detail || 'Failed to delete portfolio');
     }
+  }
+
+  /**
+   * Fetch analytics for a single portfolio by ID
+   */
+  async getAnalytics(id: string): Promise<any> { 
+    const response = await fetch(`http://localhost:8000/analytics/${id}`, {
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Failed to fetch portfolio analytics');
+    }
+    
+    return response.json();
   }
 }
 

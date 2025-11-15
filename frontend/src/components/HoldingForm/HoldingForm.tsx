@@ -1,6 +1,6 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { portfolioService } from '../PortfolioForm/portfolioService';
-import { HoldingCreate } from '../PortfolioForm/types';
+import { HoldingAdd } from '../PortfolioForm/types';
 import './HoldingForm.css';
 
 interface Message {
@@ -22,10 +22,9 @@ const getTodayDateString = () => {
 };
 
 export default function HoldingForm({ portfolioId, onSuccess }: HoldingFormProps) {
-  const [formData, setFormData] = useState<HoldingCreate>({
+  const [formData, setFormData] = useState<HoldingAdd>({
     symbol: '',
     shares: 0,
-    purchasePrice: 0,
     purchaseDate: getTodayDateString(),
   });
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,8 +35,8 @@ export default function HoldingForm({ portfolioId, onSuccess }: HoldingFormProps
     setLoading(true);
     setMessage({ type: '', text: '' });
 
-    if (formData.symbol.length < 3 || formData.symbol.length > 4) {
-      setMessage({ type: 'error', text: 'Ticker symbol must be 3-4 characters long.' });
+    if (formData.symbol.length < 1 || formData.symbol.length > 5) {
+      setMessage({ type: 'error', text: 'Ticker symbol must be 1-5 characters long.' });
       setLoading(false);
       return;
     }
@@ -46,14 +45,12 @@ export default function HoldingForm({ portfolioId, onSuccess }: HoldingFormProps
       await portfolioService.addHolding(portfolioId, {
         ...formData,
         shares: Number(formData.shares),
-        purchasePrice: Number(formData.purchasePrice),
       });
       
       setMessage({ type: 'success', text: 'Holding added successfully!' });
       setFormData({
         symbol: '',
         shares: 0,
-        purchasePrice: 0,
         purchaseDate: getTodayDateString(),
       });
       
@@ -80,7 +77,7 @@ export default function HoldingForm({ portfolioId, onSuccess }: HoldingFormProps
     }));
   };
 
-  const isFormValid = formData.symbol.length >= 3 && formData.symbol.length <= 4 && formData.shares > 0 && formData.purchasePrice > 0 && formData.purchaseDate;
+  const isFormValid = formData.symbol.length >= 1 && formData.symbol.length <= 5 && formData.shares > 0 && formData.purchaseDate;
 
   return (
     <div className="holding-form-container">
@@ -119,24 +116,6 @@ export default function HoldingForm({ portfolioId, onSuccess }: HoldingFormProps
             step="any"
             className="form-input"
             placeholder="e.g., 10.5"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="purchasePrice" className="form-label">
-            Purchase Price <span className="required">*</span>
-          </label>
-          <input
-            type="number"
-            id="purchasePrice"
-            name="purchasePrice"
-            value={formData.purchasePrice}
-            onChange={handleChange}
-            required
-            min="0"
-            step="any"
-            className="form-input"
-            placeholder="e.g., 150.25"
           />
         </div>
 

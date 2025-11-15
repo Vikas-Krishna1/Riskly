@@ -1,9 +1,10 @@
+import yfinance as yf
 from fastapi import APIRouter, HTTPException, Depends
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 from database import get_portfolio_collection
-from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate, HoldingCreate  # ← This imports from backend/schemas.py
+from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate, HoldingAdd
 from auth import get_current_user
 
 portfolio_router = APIRouter(prefix="/portfolios", tags=["Portfolios"])
@@ -150,7 +151,7 @@ async def delete_portfolio(
 @portfolio_router.post("/{portfolio_id}/holdings")
 async def add_holding(
     portfolio_id: str,
-    holding_data: HoldingCreate,
+    holding_data: HoldingAdd,
     current_user: dict = Depends(get_current_user)
 ):
     portfolios = get_portfolio_collection()
@@ -164,13 +165,31 @@ async def add_holding(
     if str(portfolio["userId"]) != current_user["id"]:
         raise HTTPException(status_code=403, detail="You don't have access to this portfolio")
 
+    # Determine the purchase date
+    if holding_data.purchaseDate:
+        purchase_date = datetime.strptime(holding_data.purchaseDate, "%Y-%m-%d")
+    else:
+        purchase_date = datetime.utcnow()
+
+    # Fetch historical price from yfinance for the specified date
+    try:
+        ticker = yf.Ticker(holding_data.symbol)
+        # Fetch data for a small window to ensure we get a valid price
+        history = ticker.history(start=purchase_date, end=purchase_date + timedelta(days=1))
+        if history.empty:
+            raise HTTPException(status_code=400, detail=f"Could not find symbol or price for date: {holding_data.symbol}, {holding_data.purchaseDate}")
+        
+        price_on_date = history['Close'].iloc[-1]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch stock data: {e}")
+
     # Build the new holding entry
     newHolding = {
         "id": str(ObjectId()),
         "symbol": holding_data.symbol,
         "shares": holding_data.shares,
-        "purchasePrice": holding_data.purchasePrice,
-        "purchaseDate": holding_data.purchaseDate,
+        "purchasePrice": price_on_date,
+        "purchaseDate": purchase_date,
     }
 
     # Push new holding into holdings array

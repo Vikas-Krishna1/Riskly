@@ -27,6 +27,11 @@ class HoldingCreate(BaseModel):
     purchasePrice: float = Field(..., gt=0, description="Purchase price per share")
     purchaseDate: Optional[datetime] = None
 
+class HoldingAdd(BaseModel):
+    symbol: str = Field(..., min_length=1, max_length=10, description="Stock ticker symbol")
+    shares: float = Field(..., gt=0, description="Number of shares")
+    purchaseDate: Optional[str] = None
+
 class PortfolioCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100, description="Portfolio name")
     description: Optional[str] = Field(None, max_length=500, description="Portfolio description")

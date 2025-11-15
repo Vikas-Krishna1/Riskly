@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from users import users_router
 from database import client
 from portfolios.portfolios import portfolio_router
+from portfolios.analytics import analytics_router
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
@@ -15,8 +16,7 @@ app.add_middleware(
 
 app.include_router(users_router)
 app.include_router(portfolio_router)
-
-
+app.include_router(analytics_router)
 
 
 @app.get("/")

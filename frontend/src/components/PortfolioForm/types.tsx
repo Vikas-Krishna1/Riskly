@@ -41,6 +41,12 @@ export interface HoldingCreate {
   purchaseDate: string; // Should be in 'YYYY-MM-DD' format
 }
 
+export interface HoldingAdd {
+  symbol: string;
+  shares: number;
+  purchaseDate?: string; // Should be in 'YYYY-MM-DD' format
+}
+
 export interface HoldingUpdate {
   shares?: number;
   purchasePrice?: number;
