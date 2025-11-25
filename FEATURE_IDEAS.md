@@ -2,23 +2,7 @@
 
 ## 🔥 HIGHEST IMPACT & MOST FEASIBLE (Quick Wins)
 
-### 1. **Edit & Delete Holdings** ⭐⭐⭐⭐⭐
-**Impact:** Very High | **Feasibility:** Very High | **Effort:** Low
-- **Why:** Critical missing functionality - users can only add holdings, not modify or remove them
-- **Implementation:** 
-  - Add `PUT /portfolios/{portfolio_id}/holdings/{holding_id}` endpoint
-  - Add `DELETE /portfolios/{portfolio_id}/holdings/{holding_id}` endpoint
-  - Add edit/delete buttons in SinglePortfolio holdings list
-- **User Value:** Essential for portfolio management accuracy
 
-### 2. **Portfolio Benchmark Comparison** ⭐⭐⭐⭐⭐
-**Impact:** Very High | **Feasibility:** High | **Effort:** Medium
-- **Why:** Users want to see how their portfolio performs vs S&P 500, NASDAQ, etc.
-- **Implementation:**
-  - Extend analytics endpoint to include benchmark data (SPY, QQQ, DIA)
-  - Add benchmark line to PortfolioGraphs historical value chart
-  - Show relative performance metrics (outperformance/underperformance)
-- **User Value:** Context for portfolio performance evaluation
 
 ### 3. **Export Portfolio Data (CSV/PDF)** ⭐⭐⭐⭐
 **Impact:** High | **Feasibility:** High | **Effort:** Medium

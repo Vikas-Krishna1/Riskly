@@ -44,6 +44,27 @@ interface PortfolioAnalytics {
     Date: string;
     Total: number;
   }[];
+  benchmarks?: {
+    [key: string]: {
+      name: string;
+      totalReturn: number;
+      annualizedReturn: number;
+      volatility: number;
+      historicalValue: {
+        Date: string;
+        Value: number;
+      }[];
+    };
+  };
+  benchmarkComparison?: {
+    [key: string]: {
+      name: string;
+      outperformance: number;
+      totalOutperformance: number;
+      benchmarkReturn: number;
+      benchmarkAnnualizedReturn: number;
+    };
+  };
   bestHolding?: {
     symbol: string;
     gainLoss: number;

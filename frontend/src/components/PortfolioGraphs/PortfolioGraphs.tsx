@@ -49,6 +49,27 @@ interface PortfolioAnalytics {
     Date: string;
     Total: number;
   }[];
+  benchmarks?: {
+    [key: string]: {
+      name: string;
+      totalReturn: number;
+      annualizedReturn: number;
+      volatility: number;
+      historicalValue: {
+        Date: string;
+        Value: number;
+      }[];
+    };
+  };
+  benchmarkComparison?: {
+    [key: string]: {
+      name: string;
+      outperformance: number;
+      totalOutperformance: number;
+      benchmarkReturn: number;
+      benchmarkAnnualizedReturn: number;
+    };
+  };
   bestHolding?: {
     symbol: string;
     gainLoss: number;
@@ -70,11 +91,25 @@ const COLORS = ['#3b82f6', '#60a5fa', '#818cf8', '#a78bfa', '#34d399', '#22c55e'
 
 export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
   // Format historical data for the chart
-  const historicalData = analytics.historicalValue.map((item) => ({
-    date: new Date(item.Date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    value: item.Total,
-    fullDate: item.Date,
-  }));
+  const historicalData = analytics.historicalValue.map((item) => {
+    const dataPoint: any = {
+      date: new Date(item.Date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      value: item.Total,
+      fullDate: item.Date,
+    };
+    
+    // Add benchmark data if available
+    if (analytics.benchmarks) {
+      Object.entries(analytics.benchmarks).forEach(([symbol, benchmark]) => {
+        const benchmarkPoint = benchmark.historicalValue.find(b => b.Date === item.Date);
+        if (benchmarkPoint) {
+          dataPoint[`benchmark_${symbol}`] = benchmarkPoint.Value;
+        }
+      });
+    }
+    
+    return dataPoint;
+  });
 
   // Prepare holdings data for pie chart (by value)
   const holdingsByValue = analytics.holdings
@@ -108,17 +143,28 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
     }).format(value);
   };
 
-  // Custom tooltip for historical chart
+  // Custom tooltip for historical chart with benchmarks
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
           <p className="tooltip-label">{label}</p>
-          <p className="tooltip-value">{formatCurrency(payload[0].value)}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={index} className="tooltip-value" style={{ color: entry.color }}>
+              {entry.name}: {formatCurrency(entry.value)}
+            </p>
+          ))}
         </div>
       );
     }
     return null;
+  };
+  
+  // Benchmark colors
+  const benchmarkColors: { [key: string]: string } = {
+    SPY: '#ef4444', // red
+    QQQ: '#8b5cf6', // purple
+    DIA: '#f59e0b', // amber
   };
 
   return (
@@ -227,6 +273,27 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
         )}
       </div>
 
+      {/* Benchmark Comparison Section */}
+      {analytics.benchmarkComparison && Object.keys(analytics.benchmarkComparison).length > 0 && (
+        <>
+          <h3 className="benchmark-section-title">Benchmark Comparison</h3>
+          <div className="metrics-grid">
+            {Object.entries(analytics.benchmarkComparison).map(([symbol, comparison]) => (
+              <div key={symbol} className="metric-card benchmark-card">
+                <div className="metric-label">vs {comparison.name}</div>
+                <div className={`metric-value ${comparison.outperformance >= 0 ? 'positive' : 'negative'}`}>
+                  {(comparison.outperformance * 100).toFixed(2)}%
+                </div>
+                <div className="metric-subtext">
+                  Portfolio: {(analytics.analytics.annualizedReturn * 100).toFixed(2)}% | 
+                  {comparison.name}: {(comparison.benchmarkAnnualizedReturn * 100).toFixed(2)}%
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
       {/* Historical Portfolio Value Chart */}
       <div className="chart-container">
         <h3 className="chart-title">Portfolio Value Over Time</h3>
@@ -257,6 +324,19 @@ export default function PortfolioGraphs({ analytics }: PortfolioGraphsProps) {
               name="Portfolio Value"
               activeDot={{ r: 6, fill: '#60a5fa' }}
             />
+            {analytics.benchmarks && Object.entries(analytics.benchmarks).map(([symbol, benchmark]) => (
+              <Line
+                key={symbol}
+                type="monotone"
+                dataKey={`benchmark_${symbol}`}
+                stroke={benchmarkColors[symbol] || '#94a3b8'}
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={false}
+                name={benchmark.name}
+                activeDot={{ r: 4 }}
+              />
+            ))}
           </LineChart>
         </ResponsiveContainer>
       </div>

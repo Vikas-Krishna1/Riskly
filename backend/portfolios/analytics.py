@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from bson import ObjectId
+from datetime import timedelta
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -226,6 +227,85 @@ async def get_portfolio_analytics(
     treynor_ratio = safe_float(treynor_ratio)
     annualized_return = safe_float(annualized_return)
 
+    # Fetch benchmark data (SPY, QQQ, DIA)
+    benchmarks = {}
+    benchmark_symbols = {
+        "SPY": "S&P 500",
+        "QQQ": "NASDAQ 100",
+        "DIA": "Dow Jones"
+    }
+    
+    # Get the date range from portfolio data
+    start_date = data.index[0]
+    end_date = data.index[-1]
+    
+    for symbol, name in benchmark_symbols.items():
+        try:
+            benchmark_ticker = yf.Ticker(symbol)
+            benchmark_data = benchmark_ticker.history(start=start_date, end=end_date + timedelta(days=1), auto_adjust=True)
+            
+            if not benchmark_data.empty and 'Close' in benchmark_data.columns:
+                # Align benchmark data to portfolio date index using forward fill
+                benchmark_close = benchmark_data['Close']
+                
+                # Reindex to match portfolio dates, forward fill missing values
+                aligned_benchmark = benchmark_close.reindex(data.index, method='ffill')
+                # Backfill any remaining NaN values at the start
+                aligned_benchmark = aligned_benchmark.bfill()
+                
+                # Calculate normalized value (starting at portfolio's initial value for comparison)
+                if not aligned_benchmark.empty and aligned_benchmark.notna().any():
+                    # Get first valid price
+                    first_valid_idx = aligned_benchmark.first_valid_index()
+                    if first_valid_idx is not None:
+                        initial_benchmark_price = aligned_benchmark.loc[first_valid_idx]
+                        if initial_benchmark_price > 0:
+                            # Normalize benchmark to start at portfolio's initial value
+                            normalized_benchmark = (aligned_benchmark / initial_benchmark_price) * initial_value
+                            
+                            # Calculate benchmark returns using original prices
+                            benchmark_returns = benchmark_close.pct_change().dropna()
+                            benchmark_total_return = ((benchmark_close.iloc[-1] - benchmark_close.iloc[0]) / benchmark_close.iloc[0]) if benchmark_close.iloc[0] > 0 else 0.0
+                            benchmark_annualized_return = benchmark_returns.mean() * 252 if len(benchmark_returns) > 0 else 0.0
+                            benchmark_volatility = benchmark_returns.std() if len(benchmark_returns) > 0 else 0.0
+                            
+                            # Format historical benchmark data aligned with portfolio dates
+                            benchmark_historical = []
+                            for date in data.index:
+                                if date in normalized_benchmark.index:
+                                    value = normalized_benchmark.loc[date]
+                                    if pd.notna(value):
+                                        benchmark_historical.append({
+                                            "Date": date.strftime('%Y-%m-%d'),
+                                            "Value": float(value)
+                                        })
+                            
+                            if benchmark_historical:  # Only add if we have data
+                                benchmarks[symbol] = {
+                                    "name": name,
+                                    "totalReturn": safe_float(benchmark_total_return),
+                                    "annualizedReturn": safe_float(benchmark_annualized_return),
+                                    "volatility": safe_float(benchmark_volatility),
+                                    "historicalValue": benchmark_historical
+                                }
+        except Exception as e:
+            print(f"Failed to fetch benchmark {symbol}: {e}")
+            continue
+    
+    # Calculate relative performance vs benchmarks
+    benchmark_comparison = {}
+    for symbol, benchmark_data in benchmarks.items():
+        portfolio_outperformance = annualized_return - benchmark_data["annualizedReturn"]
+        portfolio_total_outperformance = total_return - benchmark_data["totalReturn"]
+        
+        benchmark_comparison[symbol] = {
+            "name": benchmark_data["name"],
+            "outperformance": safe_float(portfolio_outperformance),
+            "totalOutperformance": safe_float(portfolio_total_outperformance),
+            "benchmarkReturn": benchmark_data["totalReturn"],
+            "benchmarkAnnualizedReturn": benchmark_data["annualizedReturn"]
+        }
+
     # Format historical value with proper date serialization
     historical_df = portfolio_values[['Total']].reset_index()
     historical_df.columns = ['Date', 'Total']
@@ -255,6 +335,8 @@ async def get_portfolio_analytics(
         },
         "holdings": holdings_analytics,
         "historicalValue": historical_value,
+        "benchmarks": benchmarks,
+        "benchmarkComparison": benchmark_comparison,
         "bestHolding": {
             "symbol": best_holding['symbol'],
             "gainLoss": best_holding['gainLoss'],

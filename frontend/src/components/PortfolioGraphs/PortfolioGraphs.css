@@ -51,6 +51,28 @@
   background: linear-gradient(135deg, #0f1116 0%, #1e3a8a 20%);
 }
 
+.metric-card.benchmark-card {
+  border-color: rgba(139, 92, 246, 0.3);
+  background: linear-gradient(135deg, #0f1116 0%, #1e1b4b 20%);
+}
+
+.metric-subtext {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+  font-weight: 400;
+}
+
+.benchmark-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #60a5fa;
+  margin: 3rem 0 1.5rem 0;
+  text-align: center;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  padding-bottom: 0.75rem;
+}
+
 .metric-label {
   font-size: 0.875rem;
   color: #94a3b8;
