@@ -204,6 +204,23 @@ class PortfolioService {
     
     return response.json();
   }
+
+  /**
+   * Compare multiple portfolios
+   */
+  async comparePortfolios(portfolioIds: string[]): Promise<any> {
+    const idsParam = portfolioIds.join(',');
+    const response = await fetch(`http://localhost:8000/analytics/compare?portfolio_ids=${idsParam}`, {
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Failed to compare portfolios');
+    }
+    
+    return response.json();
+  }
 }
 
 // Export a singleton instance

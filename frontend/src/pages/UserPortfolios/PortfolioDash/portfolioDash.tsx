@@ -3,10 +3,11 @@ import { portfolioService } from '../../../components/PortfolioForm/portfolioSer
 import { Portfolio } from '../../../components/PortfolioForm/types';
 import PortfolioForm from '../../../components/PortfolioForm/PortfolioForm';
 import './portFolioDash.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function PortfolioDash() {
   const navigate = useNavigate();
+  const { userId } = useParams<{ userId: string }>();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -75,12 +76,22 @@ export default function PortfolioDash() {
     <div className="portfolio-list-container">
       <div className="portfolio-list-header">
         <h1>My Portfolios</h1>
-        <button 
-          onClick={() => setShowForm(!showForm)}
-          className="add-portfolio-button"
-        >
-          {showForm ? 'Cancel' : '+ New Portfolio'}
-        </button>
+        <div className="header-buttons">
+          {portfolios.length >= 2 && userId && (
+            <button
+              onClick={() => navigate(`/${userId}/portfolios/compare`)}
+              className="compare-portfolios-button"
+            >
+              📊 Compare Portfolios
+            </button>
+          )}
+          <button 
+            onClick={() => setShowForm(!showForm)}
+            className="add-portfolio-button"
+          >
+            {showForm ? 'Cancel' : '+ New Portfolio'}
+          </button>
+        </div>
       </div>
 
       {error && (

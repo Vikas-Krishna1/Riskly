@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from bson import ObjectId
 from datetime import timedelta
+from typing import List
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -8,6 +9,165 @@ from database import get_portfolio_collection
 from auth import get_current_user
 
 analytics_router = APIRouter(prefix="/analytics", tags=["Analytics"])
+
+@analytics_router.get("/compare")
+async def compare_portfolios(
+    portfolio_ids: str = Query(..., description="Comma-separated list of portfolio IDs"),
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Compare multiple portfolios side-by-side.
+    Returns analytics for each portfolio and overlay charts data.
+    """
+    portfolios = get_portfolio_collection()
+    
+    # Parse portfolio IDs from query string
+    portfolio_id_list = [pid.strip() for pid in portfolio_ids.split(",") if pid.strip()]
+    
+    if len(portfolio_id_list) < 2:
+        raise HTTPException(status_code=400, detail="At least 2 portfolios are required for comparison")
+    
+    if len(portfolio_id_list) > 5:
+        raise HTTPException(status_code=400, detail="Maximum 5 portfolios can be compared at once")
+    
+    comparison_data = []
+    
+    for portfolio_id in portfolio_id_list:
+        try:
+            portfolio = await portfolios.find_one({"_id": ObjectId(portfolio_id)})
+            
+            if not portfolio:
+                continue
+            
+            # Security: verify ownership
+            if str(portfolio["userId"]) != current_user["id"]:
+                continue
+            
+            # Get analytics for this portfolio (reuse existing function logic)
+            holdings = portfolio.get("holdings", [])
+            if not holdings:
+                continue
+            
+            all_series = []
+            valid_holdings = []
+            
+            for holding in holdings:
+                symbol = holding['symbol']
+                try:
+                    ticker = yf.Ticker(symbol)
+                    stock_data = ticker.history(period="1y", auto_adjust=True)
+                    
+                    if stock_data.empty or 'Close' not in stock_data.columns:
+                        continue
+                    
+                    close_series = stock_data['Close']
+                    if close_series.isnull().all():
+                        continue
+                    
+                    close_series = close_series.rename(symbol)
+                    all_series.append(close_series)
+                    valid_holdings.append(holding)
+                except Exception as e:
+                    print(f"Skipping symbol {symbol} due to error: {e}")
+                    continue
+            
+            if not valid_holdings:
+                continue
+            
+            # Process data
+            data = pd.concat(all_series, axis=1)
+            data = data.ffill().bfill()
+            data.dropna(axis=1, how='all', inplace=True)
+            
+            final_valid_symbols = data.columns.tolist()
+            holdings = [h for h in valid_holdings if h['symbol'] in final_valid_symbols]
+            
+            if not holdings:
+                continue
+            
+            # Calculate portfolio value
+            latest_prices = data.iloc[-1]
+            total_portfolio_value = 0
+            
+            for holding in holdings:
+                symbol = holding['symbol']
+                shares = holding['shares']
+                current_price = latest_prices[symbol]
+                total_portfolio_value += shares * current_price
+            
+            # Historical Portfolio Value
+            portfolio_values = pd.DataFrame(index=data.index)
+            for holding in holdings:
+                symbol = holding['symbol']
+                shares = holding['shares']
+                portfolio_values[symbol] = data[symbol] * shares
+            
+            portfolio_values['Total'] = portfolio_values.sum(axis=1)
+            
+            # Returns
+            returns = portfolio_values['Total'].pct_change().dropna()
+            
+            # Analytics
+            daily_return = returns.mean()
+            volatility = returns.std()
+            sharpe_ratio = (daily_return / volatility * np.sqrt(252)) if volatility != 0 else 0.0
+            
+            cumulative = (1 + returns).cumprod()
+            running_max = cumulative.expanding().max()
+            drawdown = (cumulative - running_max) / running_max
+            max_drawdown = drawdown.min()
+            
+            downside_returns = returns[returns < 0]
+            downside_std = downside_returns.std() if len(downside_returns) > 0 else 0.0
+            sortino_ratio = (daily_return / downside_std * np.sqrt(252)) if downside_std != 0 else 0.0
+            
+            annualized_return = daily_return * 252
+            calmar_ratio = (annualized_return / abs(max_drawdown)) if max_drawdown != 0 else 0.0
+            
+            initial_value = portfolio_values['Total'].iloc[0]
+            final_value = portfolio_values['Total'].iloc[-1]
+            total_return = ((final_value - initial_value) / initial_value) if initial_value != 0 else 0.0
+            
+            # Safe float helper
+            def safe_float(value):
+                if pd.isna(value) or np.isinf(value):
+                    return 0.0
+                return float(value)
+            
+            # Format historical value
+            historical_df = portfolio_values[['Total']].reset_index()
+            historical_df.columns = ['Date', 'Total']
+            historical_df['Date'] = historical_df['Date'].dt.strftime('%Y-%m-%d')
+            historical_value = historical_df.to_dict('records')
+            
+            comparison_data.append({
+                "portfolioId": portfolio_id,
+                "portfolioName": portfolio['name'],
+                "totalPortfolioValue": safe_float(total_portfolio_value),
+                "analytics": {
+                    "dailyReturn": safe_float(daily_return),
+                    "volatility": safe_float(volatility),
+                    "sharpeRatio": safe_float(sharpe_ratio),
+                    "maxDrawdown": safe_float(max_drawdown),
+                    "sortinoRatio": safe_float(sortino_ratio),
+                    "calmarRatio": safe_float(calmar_ratio),
+                    "totalReturn": safe_float(total_return),
+                    "annualizedReturn": safe_float(annualized_return)
+                },
+                "historicalValue": historical_value
+            })
+            
+        except Exception as e:
+            print(f"Error processing portfolio {portfolio_id}: {e}")
+            continue
+    
+    if len(comparison_data) < 2:
+        raise HTTPException(status_code=400, detail="Could not retrieve valid data for at least 2 portfolios")
+    
+    return {
+        "portfolios": comparison_data,
+        "count": len(comparison_data)
+    }
 
 @analytics_router.get("/{portfolio_id}")
 async def get_portfolio_analytics(

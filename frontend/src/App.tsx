@@ -6,6 +6,7 @@ import Login from './pages/Login/Login';
 import About from './pages/About/About';
 import PortfolioDash from "./pages/UserPortfolios/PortfolioDash/portfolioDash";
 import SinglePortfolio from "./pages/UserPortfolios/SinglePortfolio/SinglePortfolio";
+import PortfolioComparison from "./pages/UserPortfolios/PortfolioComparison/PortfolioComparison";
 import Profile from "./pages/Profile/Profile";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/about" element={<About/>}/>
         <Route path="/:userId/portfolios" element={<PortfolioDash/>}/>
         <Route path="/:userId/portfolios/:portfolioId" element={<SinglePortfolio/>}/>
+        <Route path="/:userId/portfolios/compare" element={<PortfolioComparison/>}/>
         <Route path="/:userId/profile" element={<Profile/>}/>
       </Routes>
       

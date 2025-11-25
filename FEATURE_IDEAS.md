@@ -13,23 +13,9 @@
   - Optional: PDF report with charts (use reportlab or similar)
 - **User Value:** Professional reporting and compliance
 
-### 4. **Real-time Portfolio Value Updates** ⭐⭐⭐⭐
-**Impact:** High | **Feasibility:** Medium | **Effort:** Medium
-- **Why:** Current implementation requires manual refresh to see updated values
-- **Implementation:**
-  - Add WebSocket or polling mechanism (every 30-60 seconds)
-  - Update portfolio value in real-time on dashboard
-  - Show price change indicators (green/red arrows)
-- **User Value:** Live tracking of portfolio performance
 
-### 5. **Portfolio Comparison Tool** ⭐⭐⭐⭐
-**Impact:** High | **Feasibility:** Medium | **Effort:** Medium-High
-- **Why:** Users with multiple portfolios want to compare performance
-- **Implementation:**
-  - New comparison page/component
-  - Side-by-side metrics comparison
-  - Overlay charts showing multiple portfolios
-- **User Value:** Strategic portfolio management and optimization
+
+
 
 ---
 
