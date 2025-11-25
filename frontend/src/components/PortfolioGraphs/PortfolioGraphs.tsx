@@ -80,6 +80,28 @@ interface PortfolioAnalytics {
     gainLoss: number;
     gainLossPercent: number;
   };
+  attribution?: {
+    byHolding: {
+      symbol: string;
+      sector: string;
+      industry: string;
+      contributionToReturn: number;
+      contributionPercent: number;
+      gainLoss: number;
+      currentValue: number;
+      purchaseValue: number;
+    }[];
+    bySector: {
+      sector: string;
+      contributionToReturn: number;
+      contributionPercent: number;
+      totalGainLoss: number;
+      totalCurrentValue: number;
+      totalPurchaseValue: number;
+      holdings: string[];
+      holdingCount: number;
+    }[];
+  };
 }
 
 interface PortfolioGraphsProps {

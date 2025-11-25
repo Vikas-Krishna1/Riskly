@@ -472,6 +472,77 @@ async def get_portfolio_analytics(
     historical_df['Date'] = historical_df['Date'].dt.strftime('%Y-%m-%d')
     historical_value = historical_df.to_dict('records')
 
+    # Performance Attribution Analysis
+    # Calculate contribution to return for each holding
+    total_purchase_value = sum(h['purchaseValue'] for h in holdings_analytics)
+    attribution_by_holding = []
+    sector_attribution = {}
+    
+    for holding in holdings_analytics:
+        # Contribution to return = (holding's gain/loss) / (total portfolio initial value)
+        contribution_to_return = (holding['gainLoss'] / total_purchase_value) if total_purchase_value > 0 else 0.0
+        contribution_percent = (holding['currentValue'] / total_portfolio_value * 100) if total_portfolio_value > 0 else 0.0
+        
+        # Fetch sector information
+        sector = "Unknown"
+        industry = "Unknown"
+        try:
+            ticker = yf.Ticker(holding['symbol'])
+            info = ticker.info
+            sector = info.get('sector', 'Unknown')
+            industry = info.get('industry', 'Unknown')
+        except Exception as e:
+            print(f"Could not fetch sector info for {holding['symbol']}: {e}")
+        
+        attribution_by_holding.append({
+            "symbol": holding['symbol'],
+            "sector": sector,
+            "industry": industry,
+            "contributionToReturn": safe_float(contribution_to_return),
+            "contributionPercent": safe_float(contribution_percent),
+            "gainLoss": holding['gainLoss'],
+            "currentValue": holding['currentValue'],
+            "purchaseValue": holding['purchaseValue']
+        })
+        
+        # Aggregate by sector
+        if sector not in sector_attribution:
+            sector_attribution[sector] = {
+                "sector": sector,
+                "contributionToReturn": 0.0,
+                "contributionPercent": 0.0,
+                "totalGainLoss": 0.0,
+                "totalCurrentValue": 0.0,
+                "totalPurchaseValue": 0.0,
+                "holdings": []
+            }
+        
+        sector_attribution[sector]["contributionToReturn"] += contribution_to_return
+        sector_attribution[sector]["contributionPercent"] += contribution_percent
+        sector_attribution[sector]["totalGainLoss"] += holding['gainLoss']
+        sector_attribution[sector]["totalCurrentValue"] += holding['currentValue']
+        sector_attribution[sector]["totalPurchaseValue"] += holding['purchaseValue']
+        sector_attribution[sector]["holdings"].append(holding['symbol'])
+    
+    # Convert sector attribution to list and sort by contribution
+    sector_attribution_list = [
+        {
+            "sector": data["sector"],
+            "contributionToReturn": safe_float(data["contributionToReturn"]),
+            "contributionPercent": safe_float(data["contributionPercent"]),
+            "totalGainLoss": safe_float(data["totalGainLoss"]),
+            "totalCurrentValue": safe_float(data["totalCurrentValue"]),
+            "totalPurchaseValue": safe_float(data["totalPurchaseValue"]),
+            "holdings": data["holdings"],
+            "holdingCount": len(data["holdings"])
+        }
+        for data in sector_attribution.values()
+    ]
+    sector_attribution_list.sort(key=lambda x: x["contributionToReturn"], reverse=True)
+    
+    # Sort holdings by contribution to return
+    attribution_by_holding.sort(key=lambda x: x["contributionToReturn"], reverse=True)
+
     return {
         "portfolioName": portfolio['name'],
         "totalPortfolioValue": float(total_portfolio_value),
@@ -506,5 +577,9 @@ async def get_portfolio_analytics(
             "symbol": worst_holding['symbol'],
             "gainLoss": worst_holding['gainLoss'],
             "gainLossPercent": ((worst_holding['gainLoss'] / worst_holding['purchaseValue']) * 100) if worst_holding['purchaseValue'] != 0 else 0.0
-        } if worst_holding else None
+        } if worst_holding else None,
+        "attribution": {
+            "byHolding": attribution_by_holding,
+            "bySector": sector_attribution_list
+        }
     }

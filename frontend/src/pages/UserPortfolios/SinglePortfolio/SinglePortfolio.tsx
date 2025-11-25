@@ -6,6 +6,7 @@ import { Portfolio, Holding } from '../../../components/PortfolioForm/types';
 import HoldingForm from '../../../components/HoldingForm/HoldingForm';
 import EditHoldingModal from '../../../components/HoldingForm/EditHoldingModal';
 import PortfolioGraphs from '../../../components/PortfolioGraphs/PortfolioGraphs';
+import PerformanceAttribution from '../../../components/PerformanceAttribution/PerformanceAttribution';
 import AIAnalysisModal from '../../../components/AIAnalysis/AIAnalysisModal';
 import './SinglePortfolio.css';
 
@@ -74,6 +75,28 @@ interface PortfolioAnalytics {
     symbol: string;
     gainLoss: number;
     gainLossPercent: number;
+  };
+  attribution?: {
+    byHolding: {
+      symbol: string;
+      sector: string;
+      industry: string;
+      contributionToReturn: number;
+      contributionPercent: number;
+      gainLoss: number;
+      currentValue: number;
+      purchaseValue: number;
+    }[];
+    bySector: {
+      sector: string;
+      contributionToReturn: number;
+      contributionPercent: number;
+      totalGainLoss: number;
+      totalCurrentValue: number;
+      totalPurchaseValue: number;
+      holdings: string[];
+      holdingCount: number;
+    }[];
   };
 }
 
@@ -266,6 +289,13 @@ const SinglePortfolio = () => {
           </section>
 
           <PortfolioGraphs analytics={analytics} />
+
+          {analytics.attribution && (
+            <PerformanceAttribution
+              attribution={analytics.attribution}
+              totalPortfolioValue={analytics.totalPortfolioValue}
+            />
+          )}
         </>
       )}
 
