@@ -6,6 +6,7 @@ from typing import List
 from database import get_portfolio_collection
 from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate, HoldingAdd, HoldingUpdate
 from auth import get_current_user
+from portfolios.transactions import log_transaction
 
 portfolio_router = APIRouter(prefix="/portfolios", tags=["Portfolios"])
 
@@ -198,6 +199,18 @@ async def add_holding(
         {"$push": {"holdings": newHolding}}
     )
 
+    # Log transaction
+    await log_transaction(
+        portfolio_id=portfolio_id,
+        holding_id=newHolding["id"],
+        transaction_type="BUY",
+        symbol=newHolding["symbol"],
+        shares=newHolding["shares"],
+        price=newHolding["purchasePrice"],
+        purchase_date=newHolding["purchaseDate"],
+        notes=f"Added {newHolding['shares']} shares of {newHolding['symbol']}"
+    )
+
     return {
         "message": "Holding successfully created!",
         "added": newHolding
@@ -291,6 +304,31 @@ async def update_holding(
         {"$set": {"holdings": holdings}}
     )
 
+    # Log transaction - track what changed
+    changes = []
+    if holding_update.symbol and holding_update.symbol != holding["symbol"]:
+        changes.append(f"Symbol: {holding['symbol']} → {updated_holding['symbol']}")
+    if holding_update.shares is not None and holding_update.shares != holding["shares"]:
+        changes.append(f"Shares: {holding['shares']} → {updated_holding['shares']}")
+    if holding_update.purchaseDate:
+        changes.append(f"Purchase date updated")
+    
+    notes = "Updated holding: " + ", ".join(changes) if changes else "Holding updated"
+    
+    await log_transaction(
+        portfolio_id=portfolio_id,
+        holding_id=holding_id,
+        transaction_type="EDIT",
+        symbol=updated_holding["symbol"],
+        shares=updated_holding["shares"],
+        price=updated_holding["purchasePrice"],
+        purchase_date=updated_holding["purchaseDate"],
+        previous_shares=holding["shares"],
+        previous_price=holding["purchasePrice"],
+        previous_symbol=holding["symbol"],
+        notes=notes
+    )
+
     return {
         "message": "Holding updated successfully",
         "updated": updated_holding
@@ -316,9 +354,11 @@ async def delete_holding(
     # Find and remove the holding
     holdings = portfolio.get("holdings", [])
     holding_found = False
+    deleted_holding = None
     
     for i, h in enumerate(holdings):
         if h.get("id") == holding_id:
+            deleted_holding = h
             holdings.pop(i)
             holding_found = True
             break
@@ -331,6 +371,25 @@ async def delete_holding(
         {"_id": ObjectId(portfolio_id)},
         {"$set": {"holdings": holdings}}
     )
+
+    # Log transaction
+    if deleted_holding:
+        purchase_date = deleted_holding.get("purchaseDate")
+        if isinstance(purchase_date, str):
+            purchase_date = datetime.strptime(purchase_date, "%Y-%m-%d")
+        elif not isinstance(purchase_date, datetime):
+            purchase_date = datetime.utcnow()
+        
+        await log_transaction(
+            portfolio_id=portfolio_id,
+            holding_id=holding_id,
+            transaction_type="DELETE",
+            symbol=deleted_holding["symbol"],
+            shares=deleted_holding["shares"],
+            price=deleted_holding["purchasePrice"],
+            purchase_date=purchase_date,
+            notes=f"Deleted {deleted_holding['shares']} shares of {deleted_holding['symbol']}"
+        )
 
     return {
         "message": "Holding deleted successfully"

@@ -4,6 +4,7 @@ from database import client
 from portfolios.portfolios import portfolio_router
 from portfolios.analytics import analytics_router
 from portfolios.aiAnalysis import ai_analysis_router
+from portfolios.transactions import transaction_router
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
@@ -19,6 +20,7 @@ app.include_router(users_router)
 app.include_router(portfolio_router)
 app.include_router(analytics_router)
 app.include_router(ai_analysis_router)
+app.include_router(transaction_router)
 
 
 @app.get("/")

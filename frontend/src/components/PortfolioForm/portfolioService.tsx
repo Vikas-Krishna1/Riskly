@@ -221,6 +221,37 @@ class PortfolioService {
     
     return response.json();
   }
+
+  /**
+   * Fetch transaction history for a portfolio
+   */
+  async getTransactions(
+    portfolioId: string,
+    filters?: {
+      symbol?: string;
+      transactionType?: string;
+      startDate?: string;
+      endDate?: string;
+    }
+  ): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (filters?.symbol) params.append('symbol', filters.symbol);
+    if (filters?.transactionType) params.append('transaction_type', filters.transactionType);
+    if (filters?.startDate) params.append('start_date', filters.startDate);
+    if (filters?.endDate) params.append('end_date', filters.endDate);
+
+    const url = `http://localhost:8000/transactions/portfolio/${portfolioId}${params.toString() ? '?' + params.toString() : ''}`;
+    const response = await fetch(url, {
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      const error: ApiError = await response.json();
+      throw new Error(error.detail || 'Failed to fetch transactions');
+    }
+    
+    return response.json();
+  }
 }
 
 // Export a singleton instance

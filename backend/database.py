@@ -15,6 +15,8 @@ def get_user_collection():
     return db["users"]
 def get_portfolio_collection():
     return db["portfolios"]
+def get_transaction_collection():
+    return db["transactions"]
 
 print(f"✅ Connected to MongoDB: {client.address}")
 print(f"Using database: {db_name}")

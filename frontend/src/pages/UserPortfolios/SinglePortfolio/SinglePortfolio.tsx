@@ -8,6 +8,7 @@ import EditHoldingModal from '../../../components/HoldingForm/EditHoldingModal';
 import PortfolioGraphs from '../../../components/PortfolioGraphs/PortfolioGraphs';
 import PerformanceAttribution from '../../../components/PerformanceAttribution/PerformanceAttribution';
 import AIAnalysisModal from '../../../components/AIAnalysis/AIAnalysisModal';
+import TransactionHistory from '../../../components/TransactionHistory/TransactionHistory';
 import './SinglePortfolio.css';
 
 // Define the type for the analytics data
@@ -248,6 +249,11 @@ const SinglePortfolio = () => {
           <HoldingForm portfolioId={portfolio.id} onSuccess={fetchPortfolio} />
         </aside>
       </main>
+
+      {portfolioId && (
+        <TransactionHistory portfolioId={portfolioId} />
+      )}
+
       <div className="analyze-button-container">
         <button className="analyze-button" onClick={handleAnalyze} disabled={analyzing}>
           {analyzing ? 'Analyzing...' : 'Analyze Portfolio'}

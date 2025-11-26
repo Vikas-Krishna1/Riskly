@@ -61,3 +61,22 @@ class AddHoldingRequest(BaseModel):
     shares: float = Field(..., gt=0)
     purchasePrice: float = Field(..., gt=0)
     purchaseDate: Optional[datetime] = None
+
+# Transaction schemas
+class TransactionResponse(BaseModel):
+    id: str
+    portfolioId: str
+    holdingId: str
+    transactionType: str  # "BUY", "SELL", "EDIT", "DELETE"
+    symbol: str
+    shares: float
+    price: float
+    purchaseDate: datetime
+    previousShares: Optional[float] = None  # For edits
+    previousPrice: Optional[float] = None  # For edits
+    previousSymbol: Optional[str] = None  # For edits
+    timestamp: datetime
+    notes: Optional[str] = None
+    
+    class Config:
+        orm_mode = True
