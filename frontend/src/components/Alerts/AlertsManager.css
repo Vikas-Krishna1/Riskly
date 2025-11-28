@@ -1,0 +1,282 @@
+.alerts-manager {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.alerts-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.alerts-manager-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.alerts-manager-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.check-alerts-btn,
+.create-alert-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.check-alerts-btn {
+  background: #10b981;
+  color: white;
+}
+
+.check-alerts-btn:hover {
+  background: #059669;
+}
+
+.create-alert-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.create-alert-btn:hover {
+  background: #2563eb;
+}
+
+.alert-creator {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.alert-creator h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.alert-creator .form-group {
+  margin-bottom: 16px;
+}
+
+.alert-creator label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.alert-creator input,
+.alert-creator select,
+.alert-creator textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.alert-creator input:focus,
+.alert-creator select:focus,
+.alert-creator textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.alert-creator textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.form-actions button[type="button"] {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.form-actions button[type="button"]:hover {
+  background: #d1d5db;
+}
+
+.form-actions button[type="submit"] {
+  background: #3b82f6;
+  color: white;
+}
+
+.form-actions button[type="submit"]:hover {
+  background: #2563eb;
+}
+
+.form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.alert-list {
+  margin-top: 24px;
+}
+
+.alert-list h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.alert-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alert-item {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+
+.alert-item:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.alert-item.triggered {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.alert-item.disabled {
+  opacity: 0.6;
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.alert-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert-type {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 16px;
+}
+
+.triggered-badge {
+  background: #ef4444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.disabled-badge {
+  background: #6b7280;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.alert-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle-btn,
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 16px;
+  transition: opacity 0.2s;
+}
+
+.toggle-btn:hover,
+.delete-btn:hover {
+  opacity: 0.7;
+}
+
+.alert-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.alert-detail {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.alert-detail strong {
+  color: #1f2937;
+  margin-right: 6px;
+}
+
+.triggered-time {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.alert-list-empty {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.alerts-manager-loading,
+.alerts-manager-error {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.alerts-manager-error {
+  color: #ef4444;
+}
+

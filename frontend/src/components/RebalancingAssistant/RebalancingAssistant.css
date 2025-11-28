@@ -1,0 +1,403 @@
+.rebalancing-assistant {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rebalancing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.rebalancing-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.rebalancing-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.get-suggestions-btn,
+.edit-targets-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.get-suggestions-btn {
+  background: #10b981;
+  color: white;
+}
+
+.get-suggestions-btn:hover:not(:disabled) {
+  background: #059669;
+}
+
+.get-suggestions-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.edit-targets-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.edit-targets-btn:hover {
+  background: #2563eb;
+}
+
+.target-allocation-editor {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.target-allocation-editor h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.tolerance-setting {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tolerance-setting label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.tolerance-setting input {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 80px;
+}
+
+.tolerance-help {
+  margin: 8px 0 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.allocations-list {
+  margin-bottom: 16px;
+}
+
+.allocations-list h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.allocation-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.allocation-symbol {
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 60px;
+}
+
+.allocation-percent-input {
+  width: 80px;
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.allocation-percent {
+  color: #6b7280;
+}
+
+.remove-allocation-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  margin-left: auto;
+  transition: background 0.2s;
+}
+
+.remove-allocation-btn:hover {
+  background: #dc2626;
+}
+
+.total-allocation {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.error-text {
+  color: #ef4444;
+  margin-left: 8px;
+}
+
+.add-allocation {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.new-symbol-input,
+.new-percent-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.new-symbol-input {
+  flex: 1;
+}
+
+.new-percent-input {
+  width: 100px;
+}
+
+.add-allocation-btn {
+  padding: 8px 16px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.add-allocation-btn:hover {
+  background: #059669;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.cancel-btn,
+.save-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.cancel-btn {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: #d1d5db;
+}
+
+.save-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rebalancing-suggestions {
+  margin-top: 24px;
+}
+
+.suggestions-summary {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.suggestions-summary h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.summary-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.stat-value.needs-rebalancing {
+  color: #ef4444;
+}
+
+.suggestions-list h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.suggestions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.suggestions-table thead {
+  background: #f9fafb;
+}
+
+.suggestions-table th {
+  padding: 12px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.suggestions-table td {
+  padding: 12px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.suggestions-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.suggestions-table tbody tr.hold-row {
+  opacity: 0.7;
+}
+
+.symbol-cell {
+  font-weight: 600;
+}
+
+.action-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.drift-positive {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.drift-negative {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.shares-to-trade {
+  font-weight: 600;
+}
+
+.rebalancing-prompt {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.rebalancing-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .suggestions-table {
+    font-size: 12px;
+  }
+
+  .suggestions-table th,
+  .suggestions-table td {
+    padding: 8px;
+  }
+
+  .summary-stats {
+    grid-template-columns: 1fr;
+  }
+}
+

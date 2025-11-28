@@ -9,6 +9,13 @@ import PortfolioGraphs from '../../../components/PortfolioGraphs/PortfolioGraphs
 import PerformanceAttribution from '../../../components/PerformanceAttribution/PerformanceAttribution';
 import AIAnalysisModal from '../../../components/AIAnalysis/AIAnalysisModal';
 import TransactionHistory from '../../../components/TransactionHistory/TransactionHistory';
+import PortfolioHealthScore from '../../../components/PortfolioHealthScore/PortfolioHealthScore';
+import AlertsManager from '../../../components/Alerts/AlertsManager';
+import RebalancingAssistant from '../../../components/RebalancingAssistant/RebalancingAssistant';
+import CorrelationAnalysis from '../../../components/CorrelationAnalysis/CorrelationAnalysis';
+import ScenarioSimulator from '../../../components/ScenarioSimulator/ScenarioSimulator';
+import TaxOptimization from '../../../components/TaxOptimization/TaxOptimization';
+import BacktestingEngine from '../../../components/Backtesting/BacktestingEngine';
 import './SinglePortfolio.css';
 
 // Define the type for the analytics data
@@ -295,6 +302,34 @@ const SinglePortfolio = () => {
           </section>
 
           <PortfolioGraphs analytics={analytics} />
+
+          {portfolioId && (
+            <PortfolioHealthScore portfolioId={portfolioId} />
+          )}
+
+          {portfolioId && (
+            <AlertsManager portfolioId={portfolioId} />
+          )}
+
+          {portfolioId && (
+            <RebalancingAssistant portfolioId={portfolioId} />
+          )}
+
+          {portfolioId && (
+            <CorrelationAnalysis portfolioId={portfolioId} />
+          )}
+
+          {portfolioId && (
+            <ScenarioSimulator portfolioId={portfolioId} />
+          )}
+
+          {portfolioId && (
+            <TaxOptimization portfolioId={portfolioId} />
+          )}
+
+          {portfolioId && (
+            <BacktestingEngine portfolioId={portfolioId} />
+          )}
 
           {analytics.attribution && (
             <PerformanceAttribution

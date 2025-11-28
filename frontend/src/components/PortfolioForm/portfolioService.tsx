@@ -130,6 +130,141 @@ class PortfolioService {
     });
     return response.data;
   }
+
+  /**
+   * Fetch portfolio health score
+   */
+  async getHealthScore(portfolioId: string): Promise<any> {
+    const response = await apiClient.get(`/health-score/${portfolioId}`);
+    return response.data;
+  }
+
+  /**
+   * Fetch health score history
+   */
+  async getHealthScoreHistory(portfolioId: string, limit?: number): Promise<any> {
+    const params: Record<string, string> = {};
+    if (limit) params.limit = limit.toString();
+    const response = await apiClient.get(`/health-score/${portfolioId}/history`, { params });
+    return response.data;
+  }
+
+  /**
+   * Get active alerts for current user
+   */
+  async getActiveAlerts(): Promise<any[]> {
+    const response = await apiClient.get('/alerts/user/active');
+    return response.data;
+  }
+
+  /**
+   * Get alerts for a portfolio
+   */
+  async getPortfolioAlerts(portfolioId: string, enabledOnly?: boolean): Promise<any[]> {
+    const params: Record<string, string> = {};
+    if (enabledOnly) params.enabled_only = 'true';
+    const response = await apiClient.get(`/alerts/portfolio/${portfolioId}`, { params });
+    return response.data;
+  }
+
+  /**
+   * Create an alert
+   */
+  async createAlert(alertData: any): Promise<any> {
+    const response = await apiClient.post('/alerts', alertData);
+    return response.data;
+  }
+
+  /**
+   * Update an alert
+   */
+  async updateAlert(alertId: string, updateData: any): Promise<any> {
+    const response = await apiClient.put(`/alerts/${alertId}`, updateData);
+    return response.data;
+  }
+
+  /**
+   * Delete an alert
+   */
+  async deleteAlert(alertId: string): Promise<void> {
+    await apiClient.delete(`/alerts/${alertId}`);
+  }
+
+  /**
+   * Check alerts for a portfolio
+   */
+  async checkAlerts(portfolioId: string): Promise<any> {
+    const response = await apiClient.post(`/alerts/check/${portfolioId}`);
+    return response.data;
+  }
+
+  /**
+   * Get target allocations for a portfolio
+   */
+  async getTargetAllocations(portfolioId: string): Promise<any> {
+    const response = await apiClient.get(`/rebalancing/${portfolioId}/target-allocations`);
+    return response.data;
+  }
+
+  /**
+   * Set target allocations for a portfolio
+   */
+  async setTargetAllocations(portfolioId: string, allocationsData: any): Promise<any> {
+    const response = await apiClient.post(`/rebalancing/${portfolioId}/target-allocations`, allocationsData);
+    return response.data;
+  }
+
+  /**
+   * Get rebalancing suggestions
+   */
+  async getRebalancingSuggestions(portfolioId: string, considerTolerance?: boolean): Promise<any> {
+    const params: Record<string, string> = {};
+    if (considerTolerance !== undefined) params.consider_tolerance = considerTolerance.toString();
+    const response = await apiClient.get(`/rebalancing/${portfolioId}/suggestions`, { params });
+    return response.data;
+  }
+
+  /**
+   * Get correlation analysis for a portfolio
+   */
+  async getCorrelationAnalysis(portfolioId: string): Promise<any> {
+    const response = await apiClient.get(`/correlation/${portfolioId}`);
+    return response.data;
+  }
+
+  /**
+   * Simulate a scenario for a portfolio
+   */
+  async simulateScenario(portfolioId: string, scenarioData: any): Promise<any> {
+    const response = await apiClient.post(`/scenarios/${portfolioId}/simulate`, scenarioData);
+    return response.data;
+  }
+
+  /**
+   * Get predefined scenarios
+   */
+  async getPredefinedScenarios(): Promise<any> {
+    const response = await apiClient.get('/scenarios/predefined');
+    return response.data;
+  }
+
+  /**
+   * Get tax optimization suggestions
+   */
+  async getTaxOptimization(portfolioId: string, taxRate?: number): Promise<any> {
+    const params: Record<string, string> = {};
+    if (taxRate !== undefined) params.tax_rate = taxRate.toString();
+    const response = await apiClient.get(`/tax-optimization/${portfolioId}/suggestions`, { params });
+    return response.data;
+  }
+
+  /**
+   * Run backtest on a portfolio
+   */
+  async runBacktest(portfolioId: string, backtestData: any): Promise<any> {
+    const response = await apiClient.post(`/backtesting/${portfolioId}/backtest`, backtestData);
+    return response.data;
+  }
 }
 
 // Export a singleton instance

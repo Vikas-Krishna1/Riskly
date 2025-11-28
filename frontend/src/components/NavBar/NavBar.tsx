@@ -2,12 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import { useAuth } from "../../hooks/useAuth";
+import { portfolioService } from "../PortfolioForm/portfolioService";
 
 function NavBar() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [alertCount, setAlertCount] = useState(0);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Close user menu when clicking outside
@@ -31,6 +33,23 @@ function NavBar() {
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
+
+  // Fetch active alerts count
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchAlerts = async () => {
+        try {
+          const alerts = await portfolioService.getActiveAlerts();
+          setAlertCount(alerts.length);
+        } catch (err) {
+          // Silently fail - alerts are optional
+        }
+      };
+      fetchAlerts();
+      const interval = setInterval(fetchAlerts, 60000); // Check every minute
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
 
   if (loading) {
     return (
@@ -97,6 +116,11 @@ function NavBar() {
       {/* User Section */}
       {isAuthenticated ? (
         <div className="navbar-user-section" ref={userMenuRef}>
+          {alertCount > 0 && (
+            <Link to={`/${user?.id}/portfolios`} className="alert-badge-link">
+              <span className="alert-badge">{alertCount}</span>
+            </Link>
+          )}
           <button
             className="user-menu-trigger"
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}

@@ -17,6 +17,10 @@ def get_portfolio_collection():
     return db["portfolios"]
 def get_transaction_collection():
     return db["transactions"]
+def get_health_score_collection():
+    return db["health_scores"]
+def get_alert_collection():
+    return db["alerts"]
 
 print(f"✅ Connected to MongoDB: {client.address}")
 print(f"Using database: {db_name}")
