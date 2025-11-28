@@ -1,22 +1,14 @@
 // portfolioService.ts - API service for portfolio operations
-import { Portfolio, PortfolioCreate, PortfolioUpdate, ApiError, HoldingCreate, Holding, HoldingAdd } from './types';
-
-const API_BASE_URL = 'http://localhost:8000/portfolios';
+import { Portfolio, PortfolioCreate, PortfolioUpdate, Holding, HoldingAdd, HoldingUpdate } from './types';
+import apiClient from '../../api/axios';
 
 class PortfolioService {
   /**
    * Fetch all portfolios
    */
   async getCurrentUser(): Promise<{ id: string; username: string }> {
-    const response = await fetch('http://localhost:8000/users/me', {
-      credentials: 'include',
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to get current user');
-    }
-    
-    return response.json();
+    const response = await apiClient.get('/users/me');
+    return response.data;
   }
 
   /**
@@ -27,199 +19,92 @@ class PortfolioService {
     const user = await this.getCurrentUser();
     
     // Then fetch their portfolios
-    const response = await fetch(`${API_BASE_URL}/user/${user.id}`, {
-      credentials: 'include',
-    });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to fetch portfolios');
-    }
-    
-    return response.json();
+    const response = await apiClient.get(`/portfolios/user/${user.id}`);
+    return response.data;
   }
 
   /**
    * Fetch a single portfolio by ID
    */
   async getById(id: string): Promise<Portfolio> {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      credentials: 'include',
-    });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to fetch portfolio');
-    }
-    
-    return response.json();
+    const response = await apiClient.get(`/portfolios/${id}`);
+    return response.data;
   }
 
   /**
    * Create a new portfolio
    */
   async create(data: PortfolioCreate): Promise<Portfolio> {
-    const response = await fetch(API_BASE_URL, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to create portfolio');
-    }
-    
-    return response.json();
+    const response = await apiClient.post('/portfolios', data);
+    return response.data;
   }
 
   /**
    * Add a holding to an existing portfolio
    */
   async addHolding(portfolioId: string, data: HoldingAdd): Promise<Holding> {
-    const response = await fetch(`${API_BASE_URL}/${portfolioId}/holdings`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to add holding');
-    }
-
+    const response = await apiClient.post(`/portfolios/${portfolioId}/holdings`, data);
     // The backend returns { message, added }
-    const result = await response.json();
-    return result.added;
+    return response.data.added;
   }
 
   /**
    * Update an existing holding in a portfolio
    */
   async updateHolding(portfolioId: string, holdingId: string, data: HoldingUpdate): Promise<Holding> {
-    const response = await fetch(`${API_BASE_URL}/${portfolioId}/holdings/${holdingId}`, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to update holding');
-    }
-
+    const response = await apiClient.put(`/portfolios/${portfolioId}/holdings/${holdingId}`, data);
     // The backend returns { message, updated }
-    const result = await response.json();
-    return result.updated;
+    return response.data.updated;
   }
 
   /**
    * Delete a holding from a portfolio
    */
   async deleteHolding(portfolioId: string, holdingId: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/${portfolioId}/holdings/${holdingId}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to delete holding');
-    }
+    await apiClient.delete(`/portfolios/${portfolioId}/holdings/${holdingId}`);
   }
 
   /**
    * Update an existing portfolio
    */
   async update(id: string, data: PortfolioUpdate): Promise<Portfolio> {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to update portfolio');
-    }
-    
-    return response.json();
+    const response = await apiClient.put(`/portfolios/${id}`, data);
+    return response.data;
   }
 
   /**
    * Delete a portfolio
    */
   async delete(id: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to delete portfolio');
-    }
+    await apiClient.delete(`/portfolios/${id}`);
   }
 
   /**
    * Fetch analytics for a single portfolio by ID
    */
   async getAnalytics(id: string): Promise<any> { 
-    const response = await fetch(`http://localhost:8000/analytics/${id}`, {
-      credentials: 'include',
-    });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to fetch portfolio analytics');
-    }
-    
-    return response.json();
+    const response = await apiClient.get(`/analytics/${id}`);
+    return response.data;
   }
 
   /**
    * Fetch AI analysis for a single portfolio by ID
    */
   async getAIAnalysis(id: string): Promise<any> {
-    const response = await fetch(`http://localhost:8000/ai-analysis/${id}`, {
-      credentials: 'include',
-    });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to fetch AI analysis');
-    }
-    
-    return response.json();
+    const response = await apiClient.get(`/ai-analysis/${id}`);
+    return response.data;
   }
 
   /**
    * Compare multiple portfolios
    */
   async comparePortfolios(portfolioIds: string[]): Promise<any> {
-    const idsParam = portfolioIds.join(',');
-    const response = await fetch(`http://localhost:8000/analytics/compare?portfolio_ids=${idsParam}`, {
-      credentials: 'include',
+    const response = await apiClient.get('/analytics/compare', {
+      params: {
+        portfolio_ids: portfolioIds.join(','),
+      },
     });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to compare portfolios');
-    }
-    
-    return response.json();
+    return response.data;
   }
 
   /**
@@ -234,23 +119,16 @@ class PortfolioService {
       endDate?: string;
     }
   ): Promise<any[]> {
-    const params = new URLSearchParams();
-    if (filters?.symbol) params.append('symbol', filters.symbol);
-    if (filters?.transactionType) params.append('transaction_type', filters.transactionType);
-    if (filters?.startDate) params.append('start_date', filters.startDate);
-    if (filters?.endDate) params.append('end_date', filters.endDate);
+    const params: Record<string, string> = {};
+    if (filters?.symbol) params.symbol = filters.symbol;
+    if (filters?.transactionType) params.transaction_type = filters.transactionType;
+    if (filters?.startDate) params.start_date = filters.startDate;
+    if (filters?.endDate) params.end_date = filters.endDate;
 
-    const url = `http://localhost:8000/transactions/portfolio/${portfolioId}${params.toString() ? '?' + params.toString() : ''}`;
-    const response = await fetch(url, {
-      credentials: 'include',
+    const response = await apiClient.get(`/transactions/portfolio/${portfolioId}`, {
+      params,
     });
-    
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.detail || 'Failed to fetch transactions');
-    }
-    
-    return response.json();
+    return response.data;
   }
 }
 

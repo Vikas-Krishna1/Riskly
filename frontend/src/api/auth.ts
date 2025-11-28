@@ -1,38 +1,14 @@
-const API_URL = "http://localhost:8000";
-
-const apiCall = async (endpoint: string, options: RequestInit = {}) => {
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.detail || "Request failed");
-  }
-
-  return data;
-};
+import apiClient from "./axios";
 
 // Updated login function - now takes 3 parameters
 export const login = (email: string, username: string, password: string) =>
-  apiCall("/users/login", {
-    method: "POST",
-    body: JSON.stringify({ email, username, password }), // ← All 3 fields
-  });
+  apiClient.post("/users/login", { email, username, password }).then((response) => response.data);
 
 export const register = (email: string, username: string, password: string) =>
-  apiCall("/users/register", {
-    method: "POST",
-    body: JSON.stringify({ email, username, password }),
-  });
+  apiClient.post("/users/register", { email, username, password }).then((response) => response.data);
 
-export const getCurrentUser = () => apiCall("/users/me");
+export const getCurrentUser = () =>
+  apiClient.get("/users/me").then((response) => response.data);
 
 export const logout = () =>
-  apiCall("/users/logout", { method: "POST" });
+  apiClient.post("/users/logout").then((response) => response.data);
