@@ -1,23 +1,40 @@
 /* ============================================================
-   PORTFOLIO DASHBOARD - Enterprise Portfolio List
+   PORTFOLIO DASHBOARD - Enterprise Layout Redesign
    ============================================================ */
 
 .portfolio-list-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: calc(var(--space-20) + 65px) var(--space-8) var(--space-8);
+  width: 100%;
   min-height: 100vh;
   background: var(--gradient-surface);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ============================================================
-   HEADER
+   MAIN CONTENT WRAPPER
+   ============================================================ */
+.portfolio-list-container > * {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding-left: var(--space-10);
+  padding-right: var(--space-10);
+  padding-top: calc(var(--space-16) + 65px);
+  padding-bottom: var(--space-10);
+}
+
+/* ============================================================
+   HEADER SECTION
    ============================================================ */
 .portfolio-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-10);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-8);
+  align-items: start;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 2px solid var(--color-border-subtle);
 }
 
 .portfolio-list-header h1 {
@@ -30,12 +47,14 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  line-height: 1.2;
 }
 
 .header-buttons {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-3);
   align-items: center;
+  flex-wrap: wrap;
 }
 
 /* ============================================================
@@ -50,6 +69,7 @@
   cursor: pointer;
   transition: all var(--transition-base);
   border: none;
+  white-space: nowrap;
 }
 
 .compare-portfolios-button {
@@ -78,7 +98,11 @@
    FORM WRAPPER
    ============================================================ */
 .form-wrapper {
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-8);
+  padding: var(--space-6);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
   animation: slideDown var(--transition-base) ease-out;
 }
 
@@ -86,11 +110,11 @@
    LOADING STATE
    ============================================================ */
 .loading {
-  text-align: center;
-  padding: var(--space-16);
+  padding: var(--space-20);
   font-size: var(--text-lg);
   color: var(--color-text-muted);
   font-weight: var(--font-medium);
+  text-align: center;
 }
 
 /* ============================================================
@@ -100,9 +124,9 @@
   background: rgba(244, 63, 94, 0.1);
   border: 1px solid rgba(244, 63, 94, 0.3);
   color: var(--color-danger-light);
-  padding: var(--space-5);
+  padding: var(--space-6);
   border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -129,11 +153,11 @@
    EMPTY STATE
    ============================================================ */
 .empty-state {
-  text-align: center;
-  padding: var(--space-16) var(--space-8);
+  padding: var(--space-20) var(--space-12);
   background: var(--color-surface-2);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border-subtle);
+  text-align: center;
 }
 
 .empty-state p:first-child {
@@ -149,12 +173,13 @@
 }
 
 /* ============================================================
-   PORTFOLIO GRID
+   PORTFOLIO GRID - Enterprise Card Layout
    ============================================================ */
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-6);
 }
 
 /* ============================================================
@@ -164,11 +189,14 @@
   background: var(--color-surface-2);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-xl);
-  padding: var(--space-6);
+  padding: var(--space-7);
   transition: all var(--transition-base);
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .portfolio-card::before {
@@ -177,16 +205,16 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 4px;
   background: var(--gradient-brand);
   opacity: 0;
   transition: opacity var(--transition-fast);
 }
 
 .portfolio-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   border-color: var(--color-border-strong);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
 }
 
 .portfolio-card:hover::before {
@@ -197,7 +225,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
+  gap: var(--space-3);
 }
 
 .portfolio-name {
@@ -207,6 +236,7 @@
   font-weight: var(--font-bold);
   flex: 1;
   word-break: break-word;
+  line-height: 1.3;
 }
 
 /* ============================================================
@@ -219,7 +249,6 @@
   font-size: 1.125rem;
   cursor: pointer;
   padding: 0;
-  margin-left: var(--space-3);
   width: 32px;
   height: 32px;
   display: flex;
@@ -227,6 +256,7 @@
   justify-content: center;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .delete-button:hover {
@@ -241,9 +271,10 @@
    ============================================================ */
 .portfolio-description {
   color: var(--color-text-secondary);
-  line-height: 1.6;
-  margin: var(--space-4) 0;
+  line-height: 1.7;
+  margin: 0 0 var(--space-6) 0;
   font-size: var(--text-sm);
+  flex: 1;
 }
 
 /* ============================================================
@@ -252,9 +283,9 @@
 .portfolio-meta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-5);
-  padding-top: var(--space-5);
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: var(--space-6);
   border-top: 1px solid var(--color-border-subtle);
 }
 
@@ -277,20 +308,38 @@
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+@media (max-width: 1400px) {
+  .portfolio-list-container > * {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+}
+
+@media (max-width: 1024px) {
+  .portfolio-list-container > * {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+
+  .portfolio-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-5);
+  }
+}
+
 @media (max-width: 768px) {
-  .portfolio-list-container {
-    padding: calc(var(--space-12) + 65px) var(--space-5) var(--space-5);
+  .portfolio-list-container > * {
+    padding: calc(var(--space-12) + 65px) var(--space-6) var(--space-8);
   }
 
   .portfolio-list-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-5);
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
   }
 
   .header-buttons {
-    flex-direction: column;
     width: 100%;
+    flex-direction: column;
   }
 
   .compare-portfolios-button,
@@ -300,19 +349,34 @@
   }
 
   .portfolio-list-header h1 {
-    font-size: var(--text-2xl);
-    text-align: center;
+    font-size: var(--text-3xl);
   }
 
   .portfolio-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-4);
   }
 
   .portfolio-card {
-    padding: var(--space-5);
+    padding: var(--space-6);
   }
 
   .portfolio-name {
     font-size: var(--text-lg);
+  }
+
+  .form-wrapper {
+    padding: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-list-container > * {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .portfolio-card {
+    padding: var(--space-5);
   }
 }
