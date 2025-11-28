@@ -1,45 +1,64 @@
+/* ============================================================
+   PORTFOLIO HEALTH SCORE - Consistent with Dashboard Theme
+   ============================================================ */
 .health-score-container {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  margin: 20px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  margin: var(--space-6) 0;
+  border: 1px solid var(--color-border-subtle);
 }
 
 .health-score-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .health-score-header h2 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.health-score-header h2::before {
+  content: '';
+  width: 5px;
+  height: 24px;
+  background: var(--gradient-brand);
+  border-radius: var(--radius-full);
 }
 
 .refresh-btn {
-  padding: 8px 16px;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 6px;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface-3);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  transition: all var(--transition-fast);
 }
 
 .refresh-btn:hover {
-  background: #2563eb;
+  background: var(--color-bg-hover);
+  border-color: var(--color-brand-500);
+  color: var(--color-text-primary);
 }
 
 .health-score-main {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 32px;
-  margin-bottom: 24px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-6);
 }
 
 .health-score-circle {
@@ -49,130 +68,143 @@
 }
 
 .score-circle {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  box-shadow: var(--shadow-lg);
 }
 
 .score-inner {
-  width: 160px;
-  height: 160px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  background: white;
+  background: var(--color-surface-1);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .score-value {
-  font-size: 48px;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
   line-height: 1;
+  font-family: var(--font-mono);
 }
 
 .score-label {
-  font-size: 14px;
-  color: #6b7280;
-  margin-top: 8px;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-weight: var(--font-medium);
 }
 
 .health-score-breakdown h3 {
-  margin: 0 0 16px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .categories-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .category-item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .category-header {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 
 .category-name {
-  color: #4b5563;
-  font-weight: 500;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-medium);
 }
 
 .category-score {
-  color: #6b7280;
-  font-size: 13px;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
 }
 
 .category-bar {
   height: 8px;
-  background: #e5e7eb;
-  border-radius: 4px;
+  background: var(--color-surface-3);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .category-fill {
   height: 100%;
   transition: width 0.3s ease;
-  border-radius: 4px;
+  border-radius: var(--radius-full);
 }
 
 .health-score-suggestions {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid #e5e7eb;
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .health-score-suggestions h3 {
-  margin: 0 0 12px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
+  margin: 0 0 var(--space-3) 0;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .health-score-suggestions ul {
   margin: 0;
-  padding-left: 20px;
+  padding-left: var(--space-5);
   list-style-type: disc;
 }
 
 .health-score-suggestions li {
-  margin: 8px 0;
-  color: #4b5563;
+  margin: var(--space-2) 0;
+  color: var(--color-text-secondary);
   line-height: 1.6;
+  font-size: var(--text-sm);
+}
+
+.health-score-suggestions li::marker {
+  color: var(--color-brand-500);
 }
 
 .loading,
 .error {
   text-align: center;
-  padding: 40px;
-  color: #6b7280;
+  padding: var(--space-10);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
 }
 
 .error {
-  color: #ef4444;
+  color: var(--color-danger);
+  background: rgba(244, 63, 94, 0.1);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(244, 63, 94, 0.3);
 }
 
 @media (max-width: 768px) {
   .health-score-main {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: var(--space-6);
   }
 
   .score-circle {
@@ -186,7 +218,10 @@
   }
 
   .score-value {
-    font-size: 36px;
+    font-size: var(--text-3xl);
+  }
+
+  .health-score-container {
+    padding: var(--space-5);
   }
 }
-

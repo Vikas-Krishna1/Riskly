@@ -460,3 +460,22 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   ANALYTICS COMPONENTS GRID
+   Unified container for all analytics modules
+   ============================================================ */
+.single-portfolio-container > .portfolio-analytics,
+.single-portfolio-container > .health-score-container,
+.single-portfolio-container > .alerts-manager,
+.single-portfolio-container > .rebalancing-assistant,
+.single-portfolio-container > .correlation-analysis,
+.single-portfolio-container > .scenario-simulator,
+.single-portfolio-container > .tax-optimization,
+.single-portfolio-container > .backtesting-engine,
+.single-portfolio-container > .performance-attribution-container,
+.single-portfolio-container > .transaction-history-section {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}

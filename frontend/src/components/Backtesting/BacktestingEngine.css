@@ -1,292 +1,347 @@
+/* ============================================================
+   BACKTESTING ENGINE - Consistent with Dashboard Theme
+   ============================================================ */
 .backtesting-engine {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  margin: 20px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  margin: var(--space-6) 0;
+  border: 1px solid var(--color-border-subtle);
 }
 
 .backtesting-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .backtesting-header h2 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.backtesting-header h2::before {
+  content: '';
+  width: 5px;
+  height: 24px;
+  background: var(--gradient-brand);
+  border-radius: var(--radius-full);
 }
 
 .backtest-config {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 24px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
 .backtest-config h3 {
-  margin: 0 0 16px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .config-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--space-4);
   align-items: flex-end;
 }
 
 .config-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .config-group label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #374151;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
 }
 
 .config-group select,
 .config-group input {
-  padding: 8px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
   min-width: 150px;
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.config-group select:focus,
+.config-group input:focus {
+  outline: none;
+  border-color: var(--color-brand-500);
 }
 
 .run-backtest-btn {
-  padding: 10px 20px;
-  background: #10b981;
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-success);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background 0.2s;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  transition: all var(--transition-fast);
   height: fit-content;
 }
 
 .run-backtest-btn:hover:not(:disabled) {
-  background: #059669;
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .run-backtest-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .backtest-results {
-  margin-top: 24px;
+  margin-top: var(--space-6);
 }
 
 .results-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .results-header h3 {
-  margin: 0 0 8px 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1f2937;
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .results-period {
-  font-size: 14px;
-  color: #6b7280;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 
 .results-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .summary-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
   text-align: center;
 }
 
 .summary-card.highlight {
-  border-color: #3b82f6;
-  background: #eff6ff;
+  border-color: var(--color-brand-500);
+  background: rgba(33, 150, 243, 0.1);
 }
 
 .summary-label {
-  font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 8px;
-  font-weight: 500;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .summary-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
 }
 
 .summary-value.positive {
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .summary-value.negative {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .results-chart {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 24px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
 .results-chart h4 {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .results-metrics {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 24px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
 .results-metrics h4 {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
 }
 
 .metric-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 12px;
-  background: white;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .metric-label {
-  font-size: 13px;
-  color: #6b7280;
-  font-weight: 500;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .metric-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
 }
 
 .metric-value.positive {
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .metric-value.negative {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .holdings-performance {
-  margin-top: 24px;
+  margin-top: var(--space-6);
 }
 
 .holdings-performance h4 {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .holdings-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-  border-radius: 8px;
+  background: var(--color-surface-1);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .holdings-table thead {
-  background: #f9fafb;
+  background: var(--color-surface-3);
 }
 
 .holdings-table th {
-  padding: 12px;
+  padding: var(--space-3);
   text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .holdings-table td {
-  padding: 12px;
-  border-top: 1px solid #e5e7eb;
-  font-size: 14px;
-  color: #1f2937;
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
 }
 
 .holdings-table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--color-bg-hover);
 }
 
 .symbol-cell {
-  font-weight: 600;
+  font-weight: var(--font-semibold);
+  font-family: var(--font-mono);
 }
 
 .positive {
-  color: #10b981;
-  font-weight: 500;
+  color: var(--color-success);
+  font-weight: var(--font-medium);
 }
 
 .negative {
-  color: #ef4444;
-  font-weight: 500;
+  color: var(--color-danger);
+  font-weight: var(--font-medium);
 }
 
 .backtest-prompt {
   text-align: center;
-  padding: 40px;
-  color: #6b7280;
-  background: #f9fafb;
-  border-radius: 8px;
-  margin-top: 20px;
+  padding: var(--space-10);
+  color: var(--color-text-muted);
+  background: var(--color-surface-1);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+  margin-top: var(--space-5);
+  font-size: var(--text-sm);
 }
 
 .backtest-error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 16px;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: var(--color-danger);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
 }
 
 @media (max-width: 768px) {
+  .backtesting-engine {
+    padding: var(--space-5);
+  }
+
+  .config-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .config-group select,
+  .config-group input {
+    min-width: 100%;
+  }
+
+  .run-backtest-btn {
+    width: 100%;
+  }
+
   .results-summary {
     grid-template-columns: 1fr;
   }
@@ -296,12 +351,11 @@
   }
 
   .holdings-table {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .holdings-table th,
   .holdings-table td {
-    padding: 8px;
+    padding: var(--space-2);
   }
 }
-
