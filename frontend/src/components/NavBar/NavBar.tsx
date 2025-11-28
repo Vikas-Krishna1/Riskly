@@ -105,6 +105,14 @@ function NavBar() {
         )}
         
         <Link
+          to="/portfolios/public"
+          className={`nav-link ${isActive("/portfolios/public") ? "active" : ""}`}
+        >
+          <span className="nav-icon">🌐</span>
+          <span className="nav-text">Public Portfolios</span>
+        </Link>
+        
+        <Link
           to="/about"
           className={`nav-link ${isActive("/about") ? "active" : ""}`}
         >

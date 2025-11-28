@@ -265,6 +265,61 @@ class PortfolioService {
     const response = await apiClient.post(`/backtesting/${portfolioId}/backtest`, backtestData);
     return response.data;
   }
+
+  /**
+   * Get all public portfolios
+   */
+  async getPublicPortfolios(): Promise<any[]> {
+    const response = await apiClient.get('/portfolios/public');
+    return response.data;
+  }
+
+  /**
+   * Get portfolio by share token
+   */
+  async getSharedPortfolio(shareToken: string): Promise<any> {
+    const response = await apiClient.get(`/portfolios/shared/${shareToken}`);
+    return response.data;
+  }
+
+  /**
+   * Toggle portfolio visibility (public/private)
+   */
+  async toggleVisibility(portfolioId: string, isPublic: boolean): Promise<any> {
+    const response = await apiClient.put(`/portfolios/${portfolioId}/visibility?is_public=${isPublic}`);
+    return response.data;
+  }
+
+  /**
+   * Generate share token for portfolio
+   */
+  async generateShareToken(portfolioId: string): Promise<any> {
+    const response = await apiClient.post(`/portfolios/${portfolioId}/share`);
+    return response.data;
+  }
+
+  /**
+   * Revoke share token for portfolio
+   */
+  async revokeShareToken(portfolioId: string): Promise<void> {
+    await apiClient.delete(`/portfolios/${portfolioId}/share`);
+  }
+
+  /**
+   * Get user profile by ID
+   */
+  async getUserProfile(userId: string): Promise<any> {
+    const response = await apiClient.get(`/users/${userId}/profile`);
+    return response.data;
+  }
+
+  /**
+   * Update current user profile
+   */
+  async updateProfile(profileData: any): Promise<any> {
+    const response = await apiClient.put('/users/me/profile', profileData);
+    return response.data;
+  }
 }
 
 // Export a singleton instance

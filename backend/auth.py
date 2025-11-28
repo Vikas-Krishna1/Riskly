@@ -46,3 +46,26 @@ async def get_current_user(request: Request):
         "username": user.get("username"),
         "id": str(user["_id"])
     }
+
+async def get_optional_user(request: Request):
+    """Optional dependency to get current user if authenticated, otherwise None"""
+    token = request.cookies.get("access_token")
+    
+    if not token:
+        return None
+    
+    try:
+        email = verify_token(token)
+        users = get_user_collection()
+        user = await users.find_one({"email": email})
+        
+        if not user:
+            return None
+        
+        return {
+            "email": user["email"],
+            "username": user.get("username"),
+            "id": str(user["_id"])
+        }
+    except HTTPException:
+        return None

@@ -217,6 +217,30 @@
   opacity: 1;
 }
 
+.portfolio-title-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.portfolio-badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+}
+
+.portfolio-badge.public {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.portfolio-badge.private {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
 .portfolio-card-header {
   display: flex;
   justify-content: space-between;

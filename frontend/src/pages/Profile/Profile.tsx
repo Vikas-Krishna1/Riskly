@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { portfolioService } from '../../components/PortfolioForm/portfolioService';
-import { Portfolio } from '../../components/PortfolioForm/types';
+import { Portfolio, UserProfile } from '../../components/PortfolioForm/types';
+import ProfileSettings from '../../components/ProfileSettings/ProfileSettings';
 import './Profile.css';
 
 export default function Profile() {
@@ -11,6 +12,8 @@ export default function Profile() {
   const { user, isAuthenticated } = useAuth();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
   const [stats, setStats] = useState({
     totalPortfolios: 0,
     totalHoldings: 0,
@@ -31,6 +34,21 @@ export default function Profile() {
       const data = await portfolioService.getAll();
       setPortfolios(data);
       
+      // Fetch user profile if user is available
+      if (user?.id) {
+        try {
+          const fullProfile = await portfolioService.getUserProfile(user.id);
+          setProfile(fullProfile);
+        } catch (error) {
+          // If profile fetch fails, use basic user info
+          setProfile({
+            id: user.id,
+            username: user.username,
+            email: user.email
+          });
+        }
+      }
+      
       // Calculate stats
       const totalHoldings = data.reduce((sum, p) => sum + (p.holdings?.length || 0), 0);
       
@@ -47,6 +65,11 @@ export default function Profile() {
     }
   };
 
+  const handleProfileUpdate = (updatedProfile: UserProfile) => {
+    setProfile(updatedProfile);
+    fetchUserData(); // Refresh to get latest data
+  };
+
   if (loading) {
     return (
       <div className="profile-container">
@@ -55,17 +78,51 @@ export default function Profile() {
     );
   }
 
+  const displayName = profile?.displayName || user?.username || 'User';
+  const avatar = profile?.avatar;
+  const bio = profile?.bio;
+
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <div className="profile-avatar-large">
-          {user?.username?.charAt(0).toUpperCase() || 'U'}
+        <div className="profile-avatar-section">
+          {avatar ? (
+            <img src={avatar} alt="Avatar" className="profile-avatar-large" />
+          ) : (
+            <div className="profile-avatar-large">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+          )}
         </div>
         <div className="profile-info">
-          <h1 className="profile-name">{user?.username || 'User'}</h1>
-          <p className="profile-email">{user?.email || 'No email'}</p>
+          <div className="profile-name-section">
+            <h1 className="profile-name">{displayName}</h1>
+            {user?.id === userId && (
+              <button
+                className="profile-edit-button"
+                onClick={() => setShowSettings(true)}
+              >
+                Edit Profile
+              </button>
+            )}
+          </div>
+          <p className="profile-username">@{user?.username || 'user'}</p>
+          {bio && <p className="profile-bio">{bio}</p>}
+          {profile?.profilePrivacy && (
+            <span className={`profile-privacy-badge ${profile.profilePrivacy}`}>
+              {profile.profilePrivacy === 'public' ? '🌐 Public' : '🔒 Private'}
+            </span>
+          )}
         </div>
       </div>
+
+      {showSettings && profile && (
+        <ProfileSettings
+          profile={profile}
+          onUpdate={handleProfileUpdate}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
 
       <div className="profile-stats">
         <div className="stat-card">

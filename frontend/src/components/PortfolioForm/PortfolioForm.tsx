@@ -15,7 +15,8 @@ interface PortfolioFormProps {
 export default function PortfolioForm({ onSuccess }: PortfolioFormProps) {
   const [formData, setFormData] = useState<PortfolioCreate>({
     name: '',
-    description: ''
+    description: '',
+    isPublic: false
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<Message>({ type: '', text: '' });
@@ -28,7 +29,8 @@ export default function PortfolioForm({ onSuccess }: PortfolioFormProps) {
     try {
       await portfolioService.create({
         name: formData.name,
-        description: formData.description || undefined
+        description: formData.description || undefined,
+        isPublic: formData.isPublic || false
       });
       
       setMessage({ type: 'success', text: 'Portfolio created successfully!' });
@@ -51,10 +53,11 @@ export default function PortfolioForm({ onSuccess }: PortfolioFormProps) {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -96,6 +99,22 @@ export default function PortfolioForm({ onSuccess }: PortfolioFormProps) {
           />
           <p className="character-count">
             {formData.description?.length || 0}/500 characters
+          </p>
+        </div>
+
+        <div className="form-group">
+          <label className="form-label-checkbox">
+            <input
+              type="checkbox"
+              name="isPublic"
+              checked={formData.isPublic || false}
+              onChange={handleChange}
+              className="form-checkbox"
+            />
+            <span>Make this portfolio public</span>
+          </label>
+          <p className="form-help-text">
+            Public portfolios are visible to everyone in the gallery
           </p>
         </div>
 

@@ -123,7 +123,15 @@ export default function PortfolioDash() {
               onClick={() => handleCardClick(portfolio)}
             >
               <div className="portfolio-card-header">
-                <h3 className="portfolio-name">{portfolio.name}</h3>
+                <div className="portfolio-title-section">
+                  <h3 className="portfolio-name">{portfolio.name}</h3>
+                  {portfolio.isPublic && (
+                    <span className="portfolio-badge public">Public</span>
+                  )}
+                  {!portfolio.isPublic && (
+                    <span className="portfolio-badge private">Private</span>
+                  )}
+                </div>
                 <button
                   onClick={(e) => handleDelete(e, portfolio.id, portfolio.name)}
                   className="delete-button"

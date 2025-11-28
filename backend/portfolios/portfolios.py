@@ -1,11 +1,12 @@
 import yfinance as yf
-from fastapi import APIRouter, HTTPException, Depends
+import secrets
+from fastapi import APIRouter, HTTPException, Depends, Request
 from bson import ObjectId
 from datetime import datetime, timedelta
-from typing import List
-from database import get_portfolio_collection
-from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate, HoldingAdd, HoldingUpdate
-from auth import get_current_user
+from typing import List, Optional
+from database import get_portfolio_collection, get_user_collection
+from schemas import PortfolioCreate, PortfolioResponse, PortfolioUpdate, HoldingAdd, HoldingUpdate, PublicPortfolioResponse
+from auth import get_current_user, get_optional_user
 from portfolios.transactions import log_transaction
 
 portfolio_router = APIRouter(prefix="/portfolios", tags=["Portfolios"])
@@ -24,6 +25,8 @@ async def create_portfolio(
         "name": portfolio.name,
         "description": portfolio.description,
         "holdings": [],
+        "isPublic": portfolio.isPublic if portfolio.isPublic is not None else False,
+        "shareToken": None,
         "createdAt": datetime.utcnow()
     }
     
@@ -72,7 +75,8 @@ async def get_user_portfolios(
 @portfolio_router.get("/{portfolio_id}")
 async def get_portfolio(
     portfolio_id: str,
-    current_user: dict = Depends(get_current_user)
+    request: Request,
+    current_user: Optional[dict] = Depends(get_optional_user)
 ):
     portfolios = get_portfolio_collection()
     
@@ -81,12 +85,27 @@ async def get_portfolio(
     if not portfolio:
         raise HTTPException(status_code=404, detail="Portfolio not found")
     
-    # Security: verify ownership
-    if str(portfolio["userId"]) != current_user["id"]:
+    # Check if portfolio is public or user is owner
+    is_owner = current_user and str(portfolio["userId"]) == current_user["id"]
+    is_public = portfolio.get("isPublic", False)
+    
+    if not is_owner and not is_public:
         raise HTTPException(status_code=403, detail="You don't have access to this portfolio")
+    
+    # Get owner info for public portfolios
+    owner_username = None
+    if is_public or not is_owner:
+        users = get_user_collection()
+        owner = await users.find_one({"_id": portfolio["userId"]})
+        if owner:
+            owner_username = owner.get("username")
     
     portfolio["id"] = str(portfolio["_id"])
     portfolio["userId"] = str(portfolio["userId"])
+    portfolio["ownerUsername"] = owner_username
+    if not is_owner:
+        # Don't expose shareToken to non-owners
+        portfolio.pop("shareToken", None)
     del portfolio["_id"]
     
     return portfolio
@@ -115,6 +134,11 @@ async def update_portfolio(
         update_data["name"] = portfolio_update.name
     if portfolio_update.description is not None:
         update_data["description"] = portfolio_update.description
+    if portfolio_update.isPublic is not None:
+        update_data["isPublic"] = portfolio_update.isPublic
+        # If making private, remove share token
+        if not portfolio_update.isPublic:
+            update_data["shareToken"] = None
     
     if not update_data:
         raise HTTPException(status_code=400, detail="No fields to update")
@@ -394,5 +418,155 @@ async def delete_holding(
     return {
         "message": "Holding deleted successfully"
     }
+
+# Get all public portfolios
+@portfolio_router.get("/public", response_model=List[PublicPortfolioResponse])
+async def get_public_portfolios():
+    portfolios = get_portfolio_collection()
+    users = get_user_collection()
+    
+    # Get all public portfolios
+    public_portfolios = await portfolios.find(
+        {"isPublic": True}
+    ).sort("createdAt", -1).to_list(length=100)
+    
+    # Get user info for each portfolio
+    result = []
+    for portfolio in public_portfolios:
+        owner = await users.find_one({"_id": portfolio["userId"]})
+        owner_username = owner.get("username") if owner else None
+        owner_display_name = owner.get("displayName") if owner else None
+        
+        # Check if owner's profile is public
+        if owner and owner.get("profilePrivacy") != "public":
+            # Skip if profile is private (optional: could still show portfolio but not owner info)
+            pass
+        
+        portfolio_data = {
+            "id": str(portfolio["_id"]),
+            "userId": str(portfolio["userId"]),
+            "name": portfolio["name"],
+            "description": portfolio.get("description"),
+            "holdings": portfolio.get("holdings", []),
+            "createdAt": portfolio.get("createdAt"),
+            "ownerUsername": owner_username,
+            "ownerDisplayName": owner_display_name
+        }
+        result.append(portfolio_data)
+    
+    return result
+
+# Get portfolio by share token
+@portfolio_router.get("/shared/{share_token}")
+async def get_shared_portfolio(share_token: str):
+    portfolios = get_portfolio_collection()
+    users = get_user_collection()
+    
+    portfolio = await portfolios.find_one({"shareToken": share_token})
+    
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found or share link is invalid")
+    
+    # Get owner info
+    owner = await users.find_one({"_id": portfolio["userId"]})
+    owner_username = owner.get("username") if owner else None
+    owner_display_name = owner.get("displayName") if owner else None
+    
+    portfolio["id"] = str(portfolio["_id"])
+    portfolio["userId"] = str(portfolio["userId"])
+    portfolio["ownerUsername"] = owner_username
+    portfolio["ownerDisplayName"] = owner_display_name
+    # Don't expose shareToken in response
+    portfolio.pop("shareToken", None)
+    del portfolio["_id"]
+    
+    return portfolio
+
+# Toggle portfolio visibility (public/private)
+@portfolio_router.put("/{portfolio_id}/visibility")
+async def toggle_portfolio_visibility(
+    portfolio_id: str,
+    request: Request,
+    current_user: dict = Depends(get_current_user)
+):
+    from fastapi import Query
+    is_public = request.query_params.get("is_public", "false").lower() == "true"
+    portfolios = get_portfolio_collection()
+    
+    existing = await portfolios.find_one({"_id": ObjectId(portfolio_id)})
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    if str(existing["userId"]) != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
+    update_data = {"isPublic": is_public}
+    if not is_public:
+        # Remove share token when making private
+        update_data["shareToken"] = None
+    
+    await portfolios.update_one(
+        {"_id": ObjectId(portfolio_id)},
+        {"$set": update_data}
+    )
+    
+    return {"message": f"Portfolio is now {'public' if is_public else 'private'}", "isPublic": is_public}
+
+# Generate or regenerate share token
+@portfolio_router.post("/{portfolio_id}/share")
+async def generate_share_token(
+    portfolio_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    portfolios = get_portfolio_collection()
+    
+    existing = await portfolios.find_one({"_id": ObjectId(portfolio_id)})
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    if str(existing["userId"]) != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
+    # Generate secure share token
+    share_token = secrets.token_urlsafe(32)
+    
+    await portfolios.update_one(
+        {"_id": ObjectId(portfolio_id)},
+        {"$set": {"shareToken": share_token}}
+    )
+    
+    # Construct share URL (frontend will handle the full URL)
+    share_url = f"/portfolios/shared/{share_token}"
+    
+    return {
+        "message": "Share token generated successfully",
+        "shareToken": share_token,
+        "shareUrl": share_url
+    }
+
+# Revoke share token
+@portfolio_router.delete("/{portfolio_id}/share")
+async def revoke_share_token(
+    portfolio_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    portfolios = get_portfolio_collection()
+    
+    existing = await portfolios.find_one({"_id": ObjectId(portfolio_id)})
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    if str(existing["userId"]) != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
+    await portfolios.update_one(
+        {"_id": ObjectId(portfolio_id)},
+        {"$set": {"shareToken": None}}
+    )
+    
+    return {"message": "Share token revoked successfully"}
 
     

@@ -8,6 +8,7 @@ import PortfolioDash from "./pages/UserPortfolios/PortfolioDash/portfolioDash";
 import SinglePortfolio from "./pages/UserPortfolios/SinglePortfolio/SinglePortfolio";
 import PortfolioComparison from "./pages/UserPortfolios/PortfolioComparison/PortfolioComparison";
 import Profile from "./pages/Profile/Profile";
+import PublicPortfolioGallery from "./pages/PublicPortfolios/PublicPortfolioGallery";
 
 function App() {
   return (
@@ -19,10 +20,13 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About/>}/>
+        <Route path="/portfolios/public" element={<PublicPortfolioGallery/>}/>
+        <Route path="/portfolios/shared/:token" element={<SinglePortfolio/>}/>
         <Route path="/:userId/portfolios" element={<PortfolioDash/>}/>
         <Route path="/:userId/portfolios/:portfolioId" element={<SinglePortfolio/>}/>
         <Route path="/:userId/portfolios/compare" element={<PortfolioComparison/>}/>
         <Route path="/:userId/profile" element={<Profile/>}/>
+        <Route path="/users/:userId/public" element={<Profile/>}/>
       </Routes>
       
     </Router>
