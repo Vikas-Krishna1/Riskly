@@ -40,10 +40,11 @@ function Login() {
   };
 
   return (
-    <div className="body">
+    <div className="login-page">
     <div className="login-container">
+      <h2 className="login-title">Sign In</h2>
+      <p className="login-subtitle">Welcome back! Enter your credentials to continue.</p>
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">Sign In</h2>
 
         <div className="form-group">
           <label htmlFor="username">Username</label>

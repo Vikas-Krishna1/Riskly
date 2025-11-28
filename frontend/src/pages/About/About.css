@@ -1,90 +1,180 @@
+/* ============================================================
+   ABOUT PAGE - Enterprise Team Page
+   ============================================================ */
+
 .about-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a, #1e3a8a);
-  color: #f8fafc;
+  background: var(--gradient-surface);
+  color: var(--color-text-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4rem 2rem;
+  padding: calc(var(--space-20) + 65px) var(--space-6) var(--space-16);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Hero Section */
+/* Background ambiance */
+.about-page::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1000px;
+  height: 500px;
+  background: var(--gradient-glow);
+  pointer-events: none;
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
 .about-hero {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: var(--space-12);
   max-width: 700px;
+  position: relative;
+  z-index: 1;
 }
 
 .about-title {
-  font-size: 2.8rem;
-  font-weight: 700;
-  color: #818cf8;
-  margin-bottom: 1rem;
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  background: linear-gradient(135deg, var(--color-brand-300), var(--color-brand-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.02em;
 }
 
 .about-subtitle {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #cbd5e1;
+  font-size: var(--text-lg);
+  line-height: 1.7;
+  color: var(--color-text-secondary);
 }
 
-/* Founders Section */
+/* ============================================================
+   FOUNDERS SECTION
+   ============================================================ */
 .about-founders {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2.5rem;
-  max-width: 900px;
+  gap: var(--space-8);
+  max-width: 1000px;
+  position: relative;
+  z-index: 1;
 }
 
 .founder-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
-  padding: 2rem;
-  width: 300px;
+  background: var(--color-surface-2);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  width: 320px;
   text-align: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.founder-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-brand);
+  opacity: 0;
+  transition: opacity var(--transition-base);
 }
 
 .founder-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  transform: translateY(-8px);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-xl), var(--shadow-glow);
+}
+
+.founder-card:hover::before {
+  opacity: 1;
 }
 
 .founder-img {
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   width: 120px;
   height: 120px;
   object-fit: cover;
-  margin-bottom: 1rem;
-  border: 3px solid #6366f1;
+  margin-bottom: var(--space-5);
+  border: 3px solid var(--color-brand-500);
+  box-shadow: 0 4px 20px rgba(33, 150, 243, 0.3);
 }
 
 .founder-name {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #93c5fd;
-  margin-bottom: 0.3rem;
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
 }
 
 .founder-role {
-  font-size: 1rem;
-  color: #cbd5e1;
-  margin-bottom: 1rem;
+  font-size: var(--text-sm);
+  color: var(--color-brand-400);
+  margin-bottom: var(--space-4);
+  font-weight: var(--font-medium);
 }
 
 .founder-desc {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: #e2e8f0;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
 }
 
-/* Footer */
+/* ============================================================
+   FOOTER
+   ============================================================ */
 .about-footer {
-  margin-top: 3rem;
+  margin-top: var(--space-12);
   text-align: center;
-  font-size: 1rem;
-  color: #a5b4fc;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .about-page {
+    padding: calc(var(--space-12) + 65px) var(--space-5) var(--space-10);
+  }
+
+  .about-title {
+    font-size: var(--text-3xl);
+  }
+
+  .about-subtitle {
+    font-size: var(--text-base);
+  }
+
+  .about-founders {
+    gap: var(--space-6);
+  }
+
+  .founder-card {
+    width: 100%;
+    max-width: 320px;
+    padding: var(--space-6);
+  }
+
+  .founder-img {
+    width: 100px;
+    height: 100px;
+  }
 }

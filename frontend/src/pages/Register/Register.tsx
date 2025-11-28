@@ -24,9 +24,10 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="body">
+    <div className="register-page">
     <div className="register-container">
       <h1 className="register-title">Create Account</h1>
+      <p className="register-subtitle">Join Riskly and start managing your investments smarter.</p>
       <form className="register-form" onSubmit={handleSubmit}>
         <div className="input-group">
           <label htmlFor="username">Username</label>

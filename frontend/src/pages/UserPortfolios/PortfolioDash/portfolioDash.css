@@ -1,259 +1,291 @@
-/* ========== PORTFOLIO LIST CONTAINER ========== */
+/* ============================================================
+   PORTFOLIO DASHBOARD - Enterprise Portfolio List
+   ============================================================ */
+
 .portfolio-list-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 7rem 2rem 2rem; /* Extra top padding for fixed navbar */
+  padding: calc(var(--space-20) + 65px) var(--space-8) var(--space-8);
   min-height: 100vh;
-  background: linear-gradient(180deg, #0a0a0a 0%, #111317 100%);
-  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  background: var(--gradient-surface);
 }
 
-/* ========== HEADER ========== */
+/* ============================================================
+   HEADER
+   ============================================================ */
 .portfolio-list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: var(--space-10);
 }
 
 .portfolio-list-header h1 {
   margin: 0;
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #60a5fa;
-  letter-spacing: -0.03rem;
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--color-brand-300), var(--color-brand-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .header-buttons {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-4);
   align-items: center;
 }
 
-/* ========== COMPARE PORTFOLIOS BUTTON ========== */
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+.compare-portfolios-button,
+.add-portfolio-button {
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: none;
+}
+
 .compare-portfolios-button {
   background: linear-gradient(135deg, #8b5cf6, #7c3aed);
   color: white;
-  border: none;
-  padding: 0.9rem 2rem;
-  border-radius: 0.6rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0.3rem 1.5rem rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
 }
 
 .compare-portfolios-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0.5rem 2rem rgba(139, 92, 246, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45);
 }
 
-.compare-portfolios-button:active {
-  transform: scale(1);
-}
-
-/* ========== ADD PORTFOLIO BUTTON ========== */
 .add-portfolio-button {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: var(--gradient-brand);
   color: white;
-  border: none;
-  padding: 0.9rem 2rem;
-  border-radius: 0.6rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0.3rem 1.5rem rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
 }
 
 .add-portfolio-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0.5rem 2rem rgba(37, 99, 235, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(33, 150, 243, 0.45);
 }
 
-.add-portfolio-button:active {
-  transform: scale(1);
-}
-
-/* ========== FORM WRAPPER ========== */
+/* ============================================================
+   FORM WRAPPER
+   ============================================================ */
 .form-wrapper {
-  margin-bottom: 3rem;
-  animation: slideDown 0.3s ease-out;
+  margin-bottom: var(--space-10);
+  animation: slideDown var(--transition-base) ease-out;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ========== LOADING STATE ========== */
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
 .loading {
   text-align: center;
-  padding: 5rem;
-  font-size: 1.2rem;
-  color: #818cf8;
-  font-weight: 500;
+  padding: var(--space-16);
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  font-weight: var(--font-medium);
 }
 
-/* ========== ERROR MESSAGE ========== */
+/* ============================================================
+   ERROR MESSAGE
+   ============================================================ */
 .error-message {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
-  padding: 1.2rem;
-  border-radius: 0.8rem;
-  margin-bottom: 2rem;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: var(--color-danger-light);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-6);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 0 1.5rem rgba(239, 68, 68, 0.15);
 }
 
 .retry-button {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: var(--color-danger);
   color: white;
   border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.5rem;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0.3rem 1rem rgba(239, 68, 68, 0.3);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  transition: all var(--transition-fast);
 }
 
 .retry-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0.5rem 1.5rem rgba(239, 68, 68, 0.5);
+  background: var(--color-danger-dark);
+  transform: scale(1.02);
 }
 
-/* ========== EMPTY STATE ========== */
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
 .empty-state {
   text-align: center;
-  padding: 5rem 2rem;
-  background: #151820;
-  border-radius: 1rem;
-  box-shadow: 0 0 1.5rem rgba(59, 130, 246, 0.08);
+  padding: var(--space-16) var(--space-8);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .empty-state p:first-child {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #93c5fd;
-  margin-bottom: 0.75rem;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-3);
 }
 
 .empty-state p:last-child {
-  font-size: 1.1rem;
-  color: #94a3b8;
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
 }
 
-/* ========== PORTFOLIO GRID ========== */
+/* ============================================================
+   PORTFOLIO GRID
+   ============================================================ */
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: var(--space-6);
 }
 
-/* ========== PORTFOLIO CARD ========== */
+/* ============================================================
+   PORTFOLIO CARD
+   ============================================================ */
 .portfolio-card {
-  background: #151820;
-  border: 1px solid rgba(59, 130, 246, 0.1);
-  border-radius: 1rem;
-  padding: 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  transition: all var(--transition-base);
   cursor: pointer;
-  box-shadow: 0 0 1.5rem rgba(59, 130, 246, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-brand);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
 .portfolio-card:hover {
-  transform: translateY(-0.3rem);
-  box-shadow: 0 0 2.5rem rgba(59, 130, 246, 0.15);
-  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-4px);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
+}
+
+.portfolio-card:hover::before {
+  opacity: 1;
 }
 
 .portfolio-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: start;
-  margin-bottom: 1rem;
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
 }
 
 .portfolio-name {
   margin: 0;
-  font-size: 1.5rem;
-  color: #93c5fd;
-  font-weight: 700;
+  font-size: var(--text-xl);
+  color: var(--color-text-primary);
+  font-weight: var(--font-bold);
   flex: 1;
   word-break: break-word;
 }
 
-/* ========== DELETE BUTTON ========== */
+/* ============================================================
+   DELETE BUTTON
+   ============================================================ */
 .delete-button {
   background: transparent;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
-  font-size: 1.5rem;
-  line-height: 1;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: var(--color-danger-light);
+  font-size: 1.125rem;
   cursor: pointer;
   padding: 0;
-  margin-left: 0.75rem;
+  margin-left: var(--space-3);
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
 }
 
 .delete-button:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: #ef4444;
-  color: #ef4444;
+  background: rgba(244, 63, 94, 0.15);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
   transform: scale(1.1);
 }
 
-/* ========== PORTFOLIO DESCRIPTION ========== */
+/* ============================================================
+   PORTFOLIO DESCRIPTION
+   ============================================================ */
 .portfolio-description {
-  color: #cbd5e1;
+  color: var(--color-text-secondary);
   line-height: 1.6;
-  margin: 1rem 0;
-  font-size: 1rem;
+  margin: var(--space-4) 0;
+  font-size: var(--text-sm);
 }
 
-/* ========== PORTFOLIO META ========== */
+/* ============================================================
+   PORTFOLIO META
+   ============================================================ */
 .portfolio-meta {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(59, 130, 246, 0.15);
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .meta-item {
-  font-size: 0.9rem;
-  color: #94a3b8;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+.meta-item::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--color-brand-500);
+  border-radius: var(--radius-full);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media (max-width: 768px) {
   .portfolio-list-container {
-    padding: 6rem 1rem 1rem;
+    padding: calc(var(--space-12) + 65px) var(--space-5) var(--space-5);
   }
 
   .portfolio-list-header {
     flex-direction: column;
     align-items: stretch;
-    gap: 1.5rem;
+    gap: var(--space-5);
   }
 
   .header-buttons {
@@ -264,10 +296,12 @@
   .compare-portfolios-button,
   .add-portfolio-button {
     width: 100%;
+    justify-content: center;
   }
 
   .portfolio-list-header h1 {
-    font-size: 2rem;
+    font-size: var(--text-2xl);
+    text-align: center;
   }
 
   .portfolio-grid {
@@ -275,10 +309,10 @@
   }
 
   .portfolio-card {
-    padding: 1.5rem;
+    padding: var(--space-5);
   }
 
   .portfolio-name {
-    font-size: 1.3rem;
+    font-size: var(--text-lg);
   }
 }

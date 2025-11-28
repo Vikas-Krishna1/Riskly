@@ -1,158 +1,171 @@
-/* ========== PORTFOLIO FORM CONTAINER ========== */
+/* ============================================================
+   PORTFOLIO FORM - Enterprise Form Component
+   ============================================================ */
+
 .portfolio-form-container {
-  background: #151820;
-  border-radius: 1rem;
-  padding: 2.5rem;
-  box-shadow: 0 0 2rem rgba(59, 130, 246, 0.12);
-  border: 1px solid rgba(59, 130, 246, 0.15);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-md);
 }
 
 .portfolio-form-title {
-  margin: 0 0 2rem 0;
-  font-size: 1.8rem;
-  color: #60a5fa;
-  font-weight: 700;
+  margin: 0 0 var(--space-6) 0;
+  font-size: var(--text-xl);
+  color: var(--color-text-primary);
+  font-weight: var(--font-bold);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
-/* ========== FORM ========== */
+.portfolio-form-title::before {
+  content: '📁';
+}
+
+/* ============================================================
+   FORM LAYOUT
+   ============================================================ */
 .portfolio-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-5);
 }
 
-/* ========== FORM GROUP ========== */
+/* ============================================================
+   FORM GROUP
+   ============================================================ */
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .form-label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #cbd5e1;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
 }
 
 .required {
-  color: #f87171;
-  margin-left: 0.25rem;
+  color: var(--color-danger);
+  margin-left: var(--space-1);
 }
 
-/* ========== INPUT FIELDS ========== */
+/* ============================================================
+   INPUT FIELDS
+   ============================================================ */
 .form-input,
 .form-textarea {
-  background: #0f1116;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  color: #e2e8f0;
-  padding: 0.9rem;
-  border-radius: 0.6rem;
-  font-size: 1rem;
-  font-family: inherit;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  font-family: var(--font-primary);
+  transition: all var(--transition-fast);
 }
 
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: #0a0a0a;
+  border-color: var(--color-brand-500);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15);
+  background: var(--color-bg-primary);
 }
 
 .form-input::placeholder,
 .form-textarea::placeholder {
-  color: #6b7280;
+  color: var(--color-text-disabled);
 }
 
 .form-textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 100px;
+  line-height: 1.6;
 }
 
-/* ========== CHARACTER COUNT ========== */
+/* ============================================================
+   CHARACTER COUNT
+   ============================================================ */
 .character-count {
-  font-size: 0.85rem;
-  color: #94a3b8;
-  margin: 0.25rem 0 0 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
   text-align: right;
+  margin-top: var(--space-1);
 }
 
-/* ========== MESSAGES ========== */
+/* ============================================================
+   MESSAGES
+   ============================================================ */
 .message {
-  padding: 1rem;
-  border-radius: 0.6rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  animation: slideUp var(--transition-fast) ease-out;
 }
 
 .message.success {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #86efac;
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.25);
+  color: var(--color-success-light);
 }
 
 .message.error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  color: var(--color-danger-light);
 }
 
-/* ========== SUBMIT BUTTON ========== */
+/* ============================================================
+   SUBMIT BUTTON
+   ============================================================ */
 .submit-button {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: var(--gradient-brand);
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 0.6rem;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0.3rem 1.5rem rgba(37, 99, 235, 0.3);
-  margin-top: 0.5rem;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
+  margin-top: var(--space-2);
 }
 
 .submit-button:hover:not(:disabled) {
-  transform: scale(1.02);
-  box-shadow: 0 0.5rem 2rem rgba(37, 99, 235, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(33, 150, 243, 0.45);
 }
 
 .submit-button:active:not(:disabled) {
-  transform: scale(1);
+  transform: translateY(0);
 }
 
 .submit-button:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-/* ========== RESPONSIVE ========== */
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media (max-width: 768px) {
   .portfolio-form-container {
-    padding: 1.5rem;
+    padding: var(--space-6);
   }
 
   .portfolio-form-title {
-    font-size: 1.5rem;
+    font-size: var(--text-lg);
   }
 
   .form-input,
   .form-textarea {
-    font-size: 0.95rem;
+    font-size: var(--text-sm);
   }
 }

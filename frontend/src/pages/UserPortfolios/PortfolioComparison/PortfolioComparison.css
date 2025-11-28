@@ -1,235 +1,281 @@
-.comparison-container {
+/* ============================================================
+   PORTFOLIO COMPARISON - Enterprise Comparison View
+   ============================================================ */
+
+.portfolio-comparison-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
-  color: #e2e8f0;
+  padding: calc(var(--space-20) + 65px) var(--space-8) var(--space-8);
+  min-height: 100vh;
+  background: var(--gradient-surface);
 }
 
+/* ============================================================
+   HEADER
+   ============================================================ */
 .comparison-header {
-  margin-bottom: 2rem;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-10);
 }
 
 .comparison-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  color: #3b82f6;
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.comparison-subtitle {
-  color: #94a3b8;
-  font-size: 1.1rem;
+.back-button {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
-.portfolio-selection {
-  background: #1e293b;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
+.back-button:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
 }
 
-.portfolio-selection h2 {
-  margin-bottom: 1.5rem;
-  color: #3b82f6;
-  font-size: 1.5rem;
+/* ============================================================
+   PORTFOLIO SELECTOR
+   ============================================================ */
+.portfolio-selector {
+  background: var(--color-surface-2);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+  margin-bottom: var(--space-8);
+}
+
+.selector-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-5);
 }
 
 .portfolio-checkboxes {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-4);
 }
 
-.portfolio-checkbox {
+.portfolio-checkbox-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: #0f172a;
-  border-radius: 8px;
+  gap: var(--space-3);
+  background: var(--color-surface-1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all var(--transition-fast);
 }
 
-.portfolio-checkbox:hover {
-  background: #1e293b;
+.portfolio-checkbox-item:hover {
+  border-color: var(--color-border-default);
+  background: var(--color-bg-hover);
 }
 
-.portfolio-checkbox input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+.portfolio-checkbox-item.selected {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.portfolio-checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #8b5cf6;
   cursor: pointer;
-  accent-color: #3b82f6;
 }
 
-.checkbox-label {
+.portfolio-checkbox-label {
   flex: 1;
-  color: #e2e8f0;
-  font-size: 1rem;
-}
-
-.portfolio-desc {
-  color: #94a3b8;
-  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  font-weight: var(--font-medium);
 }
 
 .compare-button {
-  background: #3b82f6;
+  margin-top: var(--space-6);
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
   color: white;
   border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
 }
 
 .compare-button:hover:not(:disabled) {
-  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45);
 }
 
 .compare-button:disabled {
-  background: #475569;
-  cursor: not-allowed;
   opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.no-portfolios {
-  color: #94a3b8;
-  text-align: center;
-  padding: 2rem;
+/* ============================================================
+   COMPARISON RESULTS
+   ============================================================ */
+.comparison-results {
+  background: var(--color-surface-2);
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
 }
 
-.error-message {
-  background: #7f1d1d;
-  color: #fca5a5;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
+.results-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
-.metrics-comparison {
-  background: #1e293b;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
+.results-title::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  border-radius: var(--radius-full);
 }
 
-.metrics-comparison h2 {
-  margin-bottom: 1.5rem;
-  color: #3b82f6;
-  font-size: 1.5rem;
-}
-
-.metrics-table-container {
+/* ============================================================
+   COMPARISON TABLE
+   ============================================================ */
+.comparison-table-container {
   overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
 }
 
-.metrics-table {
+.comparison-table {
   width: 100%;
   border-collapse: collapse;
-  background: #0f172a;
-  border-radius: 8px;
-  overflow: hidden;
+  font-size: var(--text-sm);
 }
 
-.metrics-table thead {
-  background: #1e293b;
+.comparison-table thead {
+  background: var(--color-surface-3);
+  position: sticky;
+  top: 0;
 }
 
-.metrics-table th {
-  padding: 1rem;
+.comparison-table th {
+  padding: var(--space-4) var(--space-5);
   text-align: left;
-  font-weight: 600;
-  color: #e2e8f0;
-  border-bottom: 2px solid #334155;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-border-default);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.metrics-table td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #334155;
-  color: #cbd5e1;
+.comparison-table td {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
 }
 
-.metrics-table tbody tr:hover {
-  background: #1e293b;
+.comparison-table tbody tr {
+  transition: background var(--transition-fast);
 }
 
-.metric-label {
-  font-weight: 500;
-  color: #94a3b8;
+.comparison-table tbody tr:hover {
+  background: var(--color-bg-hover);
+}
+
+.metric-name {
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .metric-value {
-  font-weight: 600;
+  font-family: var(--font-mono);
 }
 
 .metric-value.positive {
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 .metric-value.negative {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
-.charts-comparison {
-  background: #1e293b;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
+.metric-value.best {
+  background: rgba(20, 184, 166, 0.15);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-semibold);
 }
 
-.charts-comparison h2 {
-  margin-bottom: 1.5rem;
-  color: #3b82f6;
-  font-size: 1.5rem;
+/* ============================================================
+   LOADING & EMPTY STATES
+   ============================================================ */
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: var(--space-12);
+  color: var(--color-text-muted);
 }
 
-.chart-container {
-  background: #0f172a;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.chart-container h3 {
-  margin-bottom: 1rem;
-  color: #94a3b8;
-  font-size: 1.2rem;
-}
-
-.bar-chart-comparison {
-  background: #1e293b;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-}
-
-.bar-chart-comparison h2 {
-  margin-bottom: 1.5rem;
-  color: #3b82f6;
-  font-size: 1.5rem;
-}
-
-.charts-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media (max-width: 768px) {
-  .comparison-container {
-    padding: 1rem;
+  .portfolio-comparison-container {
+    padding: calc(var(--space-12) + 65px) var(--space-5) var(--space-5);
   }
 
-  .charts-row {
+  .comparison-header {
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: stretch;
+  }
+
+  .comparison-header h1 {
+    font-size: var(--text-2xl);
+    text-align: center;
+  }
+
+  .portfolio-checkboxes {
     grid-template-columns: 1fr;
   }
 
-  .metrics-table-container {
-    overflow-x: scroll;
+  .comparison-results {
+    padding: var(--space-5);
+  }
+
+  .comparison-table {
+    font-size: var(--text-xs);
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: var(--space-3);
   }
 }
-

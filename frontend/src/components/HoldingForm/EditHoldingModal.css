@@ -1,172 +1,233 @@
+/* ============================================================
+   EDIT HOLDING MODAL - Enterprise Modal Component
+   ============================================================ */
+
+/* Modal Overlay */
 .edit-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
+  background: rgba(6, 8, 13, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
-  padding: 1rem;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-6);
+  animation: fadeIn var(--transition-fast) ease-out;
 }
 
+/* Modal Container */
 .edit-modal-container {
-  background-color: #1a202c; /* dark-bg-secondary */
-  border-radius: 0.5rem;
-  max-width: 500px;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-default);
+  box-shadow: var(--shadow-xl);
+  max-width: 480px;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
-  border: 1px solid #2d3748; /* gray-700 */
+  animation: slideUp var(--transition-base) ease-out;
+  overflow: hidden;
 }
 
+/* ============================================================
+   MODAL HEADER
+   ============================================================ */
 .edit-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #2d3748; /* gray-700 */
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-3);
 }
 
 .edit-modal-title {
-  color: #e2e8f0; /* gray-200 */
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
-.edit-modal-close {
-  background: none;
-  border: none;
-  color: #a0aec0; /* gray-400 */
-  font-size: 1.5rem;
+.edit-modal-title::before {
+  content: '✏️';
+}
+
+.close-button {
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 0;
-  width: 2rem;
-  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s, color 0.2s;
+  font-size: 1.125rem;
+  transition: all var(--transition-fast);
 }
 
-.edit-modal-close:hover {
-  background-color: #2d3748; /* gray-700 */
-  color: #e2e8f0; /* gray-200 */
+.close-button:hover {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: var(--color-danger);
+  color: var(--color-danger-light);
 }
 
-.edit-modal-form {
-  padding: 1.5rem;
+/* ============================================================
+   MODAL BODY
+   ============================================================ */
+.edit-modal-body {
+  padding: var(--space-6);
+}
+
+.edit-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--space-5);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: var(--space-2);
 }
 
 .form-label {
-  color: #a0aec0; /* gray-400 */
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
 }
 
 .form-input {
-  background-color: #2d3748; /* gray-700 */
-  color: #e2e8f0; /* gray-200 */
-  border: 1px solid #4a5568; /* gray-600 */
-  border-radius: 0.375rem;
-  padding: 0.75rem;
-  outline: none;
-  transition: border-color 0.2s;
-  font-size: 1rem;
+  background: var(--color-surface-1);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-base);
+  font-family: var(--font-primary);
+  transition: all var(--transition-fast);
 }
 
 .form-input:focus {
-  border-color: #4299e1; /* blue-400 */
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  outline: none;
+  border-color: var(--color-brand-500);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15);
+  background: var(--color-bg-primary);
 }
 
-.form-input::placeholder {
-  color: #718096; /* gray-500 */
+.form-input[type="number"] {
+  font-family: var(--font-mono);
 }
 
-.form-hint {
-  color: #718096; /* gray-500 */
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
+.form-input[type="date"] {
+  color-scheme: dark;
 }
 
-.message {
-  padding: 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  text-align: center;
-}
-
-.message.success {
-  background-color: #22543d; /* green-800 */
-  color: #68d391; /* green-300 */
-  border: 1px solid #2f855a; /* green-700 */
-}
-
-.message.error {
-  background-color: #742a2a; /* red-800 */
-  color: #fc8181; /* red-300 */
-  border: 1px solid #c53030; /* red-700 */
-}
-
-.edit-modal-actions {
+/* ============================================================
+   MODAL ACTIONS
+   ============================================================ */
+.modal-actions {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-3);
   justify-content: flex-end;
-  margin-top: 0.5rem;
+  margin-top: var(--space-4);
+}
+
+.cancel-button,
+.save-button {
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
 }
 
 .cancel-button {
-  background-color: #4a5568; /* gray-600 */
-  color: #e2e8f0; /* gray-200 */
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+}
+
+.cancel-button:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+}
+
+.save-button {
+  background: var(--gradient-brand);
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  color: white;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
-.cancel-button:hover:not(:disabled) {
-  background-color: #2d3748; /* gray-700 */
+.save-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(33, 150, 243, 0.45);
 }
 
-.cancel-button:disabled {
-  opacity: 0.5;
+.save-button:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
-.submit-button {
-  background-color: #4299e1; /* blue-400 */
-  color: #fff;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+.message {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  text-align: center;
+  animation: slideUp var(--transition-fast) ease-out;
 }
 
-.submit-button:hover:not(:disabled) {
-  background-color: #3182ce; /* blue-500 */
+.message.error {
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  color: var(--color-danger-light);
 }
 
-.submit-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.message.success {
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.25);
+  color: var(--color-success-light);
 }
 
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 480px) {
+  .edit-modal-overlay {
+    padding: var(--space-4);
+  }
+
+  .edit-modal-container {
+    max-width: 100%;
+  }
+
+  .edit-modal-header {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .edit-modal-body {
+    padding: var(--space-5);
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .cancel-button,
+  .save-button {
+    width: 100%;
+  }
+}
