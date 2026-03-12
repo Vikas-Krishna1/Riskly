@@ -31,7 +31,7 @@ async def register_user(user: UserCreate, response: Response):
     secure=False,
     samesite="lax",
     max_age=1800,
-    domain="https://riskly-jkm5hmz9i-vikas-krishna1s-projects.vercel.app"
+    
 )
     
     return {"message": "User registered successfully", "username": user.username}
