@@ -19,7 +19,7 @@ const Register: React.FC = () => {
     if (success) {
       setMessage("✅ Registration successful!");
     } else {
-      setMessage("❌ Registration failed. Email or username may already exist.");
+      setMessage("❌ Registration failed Email or username may already exist.");
     }
   };
 
