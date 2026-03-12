@@ -13,7 +13,7 @@ client = AsyncIOMotorClient(MONGO_DETAILS)
 
 # Get database from URI or fallback
 default_db = client.get_default_database()
-db_name = default_db.name if default_db else "riskly"
+db_name = default_db.name if default_db is not None else "riskly"
 
 db = client[db_name]
 
