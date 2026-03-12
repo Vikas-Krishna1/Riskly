@@ -4,11 +4,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_DETAILS = os.getenv("MONGO_DETAILS")  # MongoDB URI
+MONGO_DETAILS = os.getenv("MONGO_DETAILS")
+
+if not MONGO_DETAILS:
+    raise ValueError("❌ MONGO_DETAILS environment variable is not set")
 
 client = AsyncIOMotorClient(MONGO_DETAILS)
+
+# Get database from URI or fallback
 default_db = client.get_default_database()
-db_name = default_db.name if default_db is not None else "Riskly"
+db_name = default_db.name if default_db else "riskly"
+
 db = client[db_name]
 
 def get_user_collection():
