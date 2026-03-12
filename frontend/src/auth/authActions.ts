@@ -1,5 +1,5 @@
 import * as authApi from "../api/auth";
-import { setState, notifyListeners, user } from "./authState";
+import { setState, user } from "./authState";
 
 // Fetch current user
 export const fetchUser = async () => {
