@@ -54,3 +54,16 @@ __init__.pyc
 *.local
 coverage/
 logs/
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Env
+.env
+
+# Mac
+.DS_Store
