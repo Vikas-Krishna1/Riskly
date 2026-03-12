@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { portfolioService } from '../../../components/PortfolioForm/portfolioService';
 import { Portfolio } from '../../../components/PortfolioForm/types';
 import PortfolioForm from '../../../components/PortfolioForm/PortfolioForm';
-import './portFolioDash.css';
+import './PortfolioDash.css';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function PortfolioDash() {
