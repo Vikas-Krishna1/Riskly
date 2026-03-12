@@ -46,5 +46,6 @@ numpy==1.26.4
 
 # OpenAI
 openai==1.30.5
+httpx==0.27.0
 
 typing-inspection==0.4.2
