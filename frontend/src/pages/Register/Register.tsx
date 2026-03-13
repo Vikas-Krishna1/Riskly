@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
-import "./Register.css";
+import "./Register.css"; // 👈 same style format as Login.css
+import { useAuth } from "../../hooks/useAuth";
 
 const Register: React.FC = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const { register } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,10 +20,11 @@ const Register: React.FC = () => {
     }
 
     try {
+      // Call your backend directly
       const res = await fetch("https://riskly.onrender.com/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        credentials: "include", // Important for cookie-based auth
         body: JSON.stringify({ email, username, password }),
       });
 
@@ -44,49 +47,73 @@ const Register: React.FC = () => {
 
   return (
     <div className="register-page">
-      <div className="register-container">
-        <h1>Create Account</h1>
-        <form onSubmit={handleSubmit} className="register-form">
+    <div className="register-container">
+      <h1 className="register-title">Create Account</h1>
+      <p className="register-subtitle">Join Riskly and start managing your investments smarter.</p>
+      <form className="register-form" onSubmit={handleSubmit}>
+        <div className="input-group">
+          <label htmlFor="username">Username</label>
           <input
+            id="username"
             type="text"
-            placeholder="Username"
             value={username}
+            placeholder="Enter username..."
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setUsername(e.target.value)
             }
             required
           />
+        </div>
+
+        <div className="input-group">
+          <label htmlFor="email">Email</label>
           <input
+            id="email"
             type="email"
-            placeholder="Email"
             value={email}
+            placeholder="Enter email..."
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setEmail(e.target.value)
             }
             required
           />
+        </div>
+
+        <div className="input-group">
+          <label htmlFor="password">Password</label>
           <input
+            id="password"
             type="password"
-            placeholder="Password"
             value={password}
+            placeholder="Enter password..."
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
             }
             required
           />
+        </div>
+
+        <div className="input-group">
+          <label htmlFor="confirmPassword">Confirm Password</label>
           <input
+            id="confirmPassword"
             type="password"
-            placeholder="Confirm Password"
             value={confirmPassword}
+            placeholder="Confirm password..."
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setConfirmPassword(e.target.value)
             }
             required
           />
-          <button type="submit">Sign Up</button>
-          {message && <p>{message}</p>}
-        </form>
-      </div>
+        </div>
+
+        <button className="register-btn" type="submit">
+          Sign Up
+        </button>
+
+        {message && <p className="register-message">{message}</p>}
+      </form>
+    </div>
     </div>
   );
 };
