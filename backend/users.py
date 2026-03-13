@@ -9,7 +9,16 @@ from auth import get_current_user, get_optional_user
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
 # CHANGE THIS LINE - remove response_model=UserCreate
-@users_router.post("/register")  # ← Remove response_model
+def get_cookie_settings():
+    return {
+        "httponly": True,
+        "secure": True,   # True in prod (HTTPS)
+        "samesite": "lax",
+        "max_age": 1800,  # 30 minutes
+        # No domain → works on localhost and deployed domains
+    }
+
+@users_router.post("/register")
 async def register_user(user: UserCreate, response: Response):
     users = get_user_collection()
     existing = await users.find_one({"$or": [{"email": user.email}, {"username": user.username}]})
@@ -19,22 +28,14 @@ async def register_user(user: UserCreate, response: Response):
     hashed = hash_password(user.password)
     new_user = {"email": user.email, "username": user.username, "password": hashed}
     await users.insert_one(new_user)
-    
-    # Create token
+
     token = create_access_token({"sub": user.email})
-    
-    # Set HTTP-only cookie
-    response.set_cookie(
-    key="access_token",
-    value=token,
-    httponly=True,
-    secure=False,
-    samesite="lax",
-    max_age=1800,
-    
-)
-    
+
+    # Set cookie without domain
+    response.set_cookie(key="access_token", value=token, **get_cookie_settings())
+
     return {"message": "User registered successfully", "username": user.username}
+
 
 @users_router.post("/login")
 async def login_user(user: UserLogin, response: Response):
@@ -49,28 +50,19 @@ async def login_user(user: UserLogin, response: Response):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_access_token({"sub": db_user["email"]})
-    
-    response.set_cookie(
-    key="access_token",
-    value=token,
-    httponly=True,
-    secure=False,
-    samesite="lax",
-    max_age=1800,
-    domain="localhost",  # ← Add this line
-)
-    
+    response.set_cookie(key="access_token", value=token, **get_cookie_settings())
+
     return {
         "message": "Login successful",
         "username": db_user["username"],
         "email": db_user["email"]
     }
 
+
 @users_router.post("/logout")
 async def logout_user(response: Response):
     response.delete_cookie(key="access_token")
     return {"message": "Logged out successfully"}
-
 @users_router.get("/me", response_model=UserResponse)
 async def get_current_user_info(current_user: dict = Depends(get_current_user)):
     users = get_user_collection()

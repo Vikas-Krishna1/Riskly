@@ -15,30 +15,46 @@ function Login() {
         return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const success = await login(email, username, password);
-      
-      if (success) {
+      // Send login request to backend
+      const res = await fetch("https://riskly.onrender.com/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // ✅ Important to receive cookie
+        body: JSON.stringify({ email, username, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
         setMessage("✅ Login successful!");
         setUsername("");
         setEmail("");
         setPassword("");
-        await sleep(2000);
-        navigate('/home');
-        // Optional: redirect
-        // window.location.href = "/dashboard";
+
+        // Optional: verify current user
+        const meRes = await fetch("https://riskly.onrender.com/users/me", {
+          credentials: "include",
+        });
+        const meData = await meRes.json();
+        console.log("Logged in user:", meData);
+
+        await sleep(1500);
+        navigate("/home");
       } else {
-        setMessage("❌ Invalid credentials");
+        // Backend sends 401 for invalid credentials
+        setMessage(`❌ ${data.detail || "Invalid credentials"}`);
       }
     } catch (error) {
       console.error(error);
       setMessage("⚠️ Server error. Try again later.");
     }
   };
-
   return (
     <div className="login-page">
     <div className="login-container">

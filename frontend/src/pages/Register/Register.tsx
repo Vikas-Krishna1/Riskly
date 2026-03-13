@@ -14,12 +14,34 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const success = await register(email, username, password);
+    if (password !== confirmPassword) {
+      setMessage("❌ Passwords do not match");
+      return;
+    }
 
-    if (success) {
-      setMessage("✅ Registration successful!");
-    } else {
-      setMessage("❌ Registration failed Email or username may already exist.");
+    try {
+      // Call your backend directly
+      const res = await fetch("https://riskly.onrender.com/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Important for cookie-based auth
+        body: JSON.stringify({ email, username, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage("✅ Registration successful!");
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      } else {
+        setMessage(`❌ ${data.detail || "Registration failed"}`);
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("⚠️ Server error. Try again later.");
     }
   };
 
