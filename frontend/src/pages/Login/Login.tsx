@@ -1,43 +1,37 @@
 import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
-import "./Login.css"; // Import external CSS
-import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from 'react-router-dom';
+import "./Login.css";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const { login } = useAuth();
   const navigate = useNavigate();
+
   function sleep(ms: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      // Send login request to backend
       const res = await fetch("https://riskly.onrender.com/users/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // ✅ Important to receive cookie
-        body: JSON.stringify({ email, username, password }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Important for HTTP-only cookie
+        body: JSON.stringify({ email, password }), // Send only email + password
       });
 
       const data = await res.json();
 
       if (res.ok) {
         setMessage("✅ Login successful!");
-        setUsername("");
         setEmail("");
         setPassword("");
 
-        // Optional: verify current user
+        // Optional: fetch /me
         const meRes = await fetch("https://riskly.onrender.com/users/me", {
           credentials: "include",
         });
@@ -47,7 +41,6 @@ function Login() {
         await sleep(1500);
         navigate("/home");
       } else {
-        // Backend sends 401 for invalid credentials
         setMessage(`❌ ${data.detail || "Invalid credentials"}`);
       }
     } catch (error) {
@@ -55,62 +48,43 @@ function Login() {
       setMessage("⚠️ Server error. Try again later.");
     }
   };
+
   return (
     <div className="login-page">
-    <div className="login-container">
-      <h2 className="login-title">Sign In</h2>
-      <p className="login-subtitle">Welcome back! Enter your credentials to continue.</p>
-      <form className="login-form" onSubmit={handleSubmit}>
-
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setUsername(e.target.value)
-            }
-            placeholder="Enter username"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-            placeholder="Enter email"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setPassword(e.target.value)
-            }
-            placeholder="Enter password"
-            required
-          />
-        </div>
-
-        <button className="login-button" type="submit">
-          Sign In
-        </button>
-
-        {message && <p className="login-message">{message}</p>}
-      </form>
-    </div>
+      <div className="login-container">
+        <h2 className="login-title">Sign In</h2>
+        <p className="login-subtitle">Welcome back! Enter your credentials.</p>
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
+              placeholder="Enter email"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
+              placeholder="Enter password"
+              required
+            />
+          </div>
+          <button type="submit" className="login-button">
+            Sign In
+          </button>
+          {message && <p className="login-message">{message}</p>}
+        </form>
+      </div>
     </div>
   );
 }
