@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import "./Register.css"; // 👈 same style format as Login.css
+import { useAuth } from "../../hooks/useAuth";
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -8,6 +9,7 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const { register } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,33 +20,36 @@ const Register: React.FC = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/register", {
+      // Call your backend directly
+      const res = await fetch("https://riskly.onrender.com/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        credentials: "include", // Important for cookie-based auth
+        body: JSON.stringify({ email, username, password }),
       });
 
       const data = await res.json();
 
-      if (!res.ok) {
-        setMessage(data.detail || "Registration failed");
-        return;
+      if (res.ok) {
+        setMessage("✅ Registration successful!");
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      } else {
+        setMessage(`❌ ${data.detail || "Registration failed"}`);
       }
-
-      setMessage("✅ Registration successful!");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
     } catch (error) {
+      console.error(error);
       setMessage("⚠️ Server error. Try again later.");
     }
   };
 
   return (
-    <div className="body">
+    <div className="register-page">
     <div className="register-container">
       <h1 className="register-title">Create Account</h1>
+      <p className="register-subtitle">Join Riskly and start managing your investments smarter.</p>
       <form className="register-form" onSubmit={handleSubmit}>
         <div className="input-group">
           <label htmlFor="username">Username</label>

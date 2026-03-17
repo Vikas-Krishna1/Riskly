@@ -1,45 +1,66 @@
 import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import "./Login.css"; // Import external CSS
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  function sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:8000/api/login", {
+      // Send login request to backend
+      const res = await fetch("https://riskly.onrender.com/users/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // ✅ Important to receive cookie
+        body: JSON.stringify({ email, username, password }),
       });
 
       const data = await res.json();
 
-      if (!res.ok) {
-        setMessage(data.message || data.detail || "Login failed");
-        return;
-      }
+      if (res.ok) {
+        setMessage("✅ Login successful!");
+        setUsername("");
+        setEmail("");
+        setPassword("");
 
-      setMessage("✅ Login successful!");
-      setUsername("");
-      setEmail("");
-      setPassword("");
+        // Optional: verify current user
+        const meRes = await fetch("https://riskly.onrender.com/users/me", {
+          credentials: "include",
+        });
+        const meData = await meRes.json();
+        console.log("Logged in user:", meData);
+
+        await sleep(1500);
+        navigate("/home");
+      } else {
+        // Backend sends 401 for invalid credentials
+        setMessage(`❌ ${data.detail || "Invalid credentials"}`);
+      }
     } catch (error) {
       console.error(error);
       setMessage("⚠️ Server error. Try again later.");
     }
   };
-
   return (
-    <div className="body">
+    <div className="login-page">
     <div className="login-container">
+      <h2 className="login-title">Sign In</h2>
+      <p className="login-subtitle">Welcome back! Enter your credentials to continue.</p>
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">Sign In</h2>
 
         <div className="form-group">
           <label htmlFor="username">Username</label>

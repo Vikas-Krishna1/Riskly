@@ -1,0 +1,404 @@
+/* ============================================================
+   PORTFOLIO COMPARISON - Clean Enterprise Layout
+   ============================================================ */
+
+.comparison-container {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--gradient-surface);
+  padding: calc(var(--space-16) + 65px) var(--space-10) var(--space-10);
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.comparison-header {
+  max-width: 1400px;
+  margin: 0 auto var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 2px solid var(--color-border-subtle);
+}
+
+.comparison-header h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.comparison-subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ============================================================
+   PORTFOLIO SELECTION
+   ============================================================ */
+.portfolio-selection {
+  max-width: 1400px;
+  margin: 0 auto var(--space-8);
+  background: var(--color-surface-2);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.portfolio-selection h2 {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-5) 0;
+}
+
+.portfolio-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+.no-portfolios {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.portfolio-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: var(--color-surface-1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.portfolio-checkbox:hover {
+  border-color: var(--color-border-default);
+  background: var(--color-bg-hover);
+}
+
+.portfolio-checkbox:has(input:checked) {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.portfolio-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #8b5cf6;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checkbox-label {
+  flex: 1;
+  color: var(--color-text-primary);
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.portfolio-desc {
+  color: var(--color-text-muted);
+  font-weight: var(--font-normal);
+}
+
+.compare-button {
+  margin-top: var(--space-6);
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  border: none;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+}
+
+.compare-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45);
+}
+
+.compare-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   ERROR MESSAGE
+   ============================================================ */
+.error-message {
+  max-width: 1400px;
+  margin: 0 auto var(--space-6);
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: var(--color-danger-light);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+/* ============================================================
+   METRICS COMPARISON
+   ============================================================ */
+.metrics-comparison {
+  max-width: 1400px;
+  margin: 0 auto var(--space-8);
+  background: var(--color-surface-2);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.metrics-comparison h2 {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-5) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.metrics-comparison h2::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  border-radius: var(--radius-full);
+}
+
+.metrics-table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.metrics-table thead {
+  background: var(--color-surface-3);
+}
+
+.metrics-table th {
+  padding: var(--space-4) var(--space-5);
+  text-align: left;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-border-default);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.metrics-table td {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+}
+
+.metrics-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.metrics-table tbody tr:hover {
+  background: var(--color-bg-hover);
+}
+
+.metrics-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.metric-label {
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.metric-value.positive {
+  color: var(--color-success);
+}
+
+.metric-value.negative {
+  color: var(--color-danger);
+}
+
+/* ============================================================
+   CHARTS COMPARISON
+   ============================================================ */
+.charts-comparison {
+  max-width: 1400px;
+  margin: 0 auto var(--space-8);
+  background: var(--color-surface-2);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.charts-comparison h2 {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-5) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.charts-comparison h2::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--gradient-brand);
+  border-radius: var(--radius-full);
+}
+
+.chart-container {
+  background: var(--color-surface-1);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+  padding: var(--space-5);
+}
+
+/* ============================================================
+   BAR CHART COMPARISON
+   ============================================================ */
+.bar-chart-comparison {
+  max-width: 1400px;
+  margin: 0 auto var(--space-8);
+  background: var(--color-surface-2);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.bar-chart-comparison h2 {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-5) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.bar-chart-comparison h2::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-radius: var(--radius-full);
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+}
+
+.half-width {
+  min-width: 0;
+}
+
+.half-width h3 {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-4) 0;
+  text-align: center;
+}
+
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
+.loading-state {
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+  padding: var(--space-12);
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1200px) {
+  .comparison-container {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .comparison-container {
+    padding: calc(var(--space-12) + 65px) var(--space-5) var(--space-6);
+  }
+
+  .comparison-header h1 {
+    font-size: var(--text-2xl);
+  }
+
+  .portfolio-selection,
+  .metrics-comparison,
+  .charts-comparison,
+  .bar-chart-comparison {
+    padding: var(--space-5);
+    margin-bottom: var(--space-6);
+  }
+
+  .portfolio-checkboxes {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-table {
+    font-size: var(--text-xs);
+  }
+
+  .metrics-table th,
+  .metrics-table td {
+    padding: var(--space-3);
+  }
+
+  .chart-container {
+    padding: var(--space-3);
+  }
+
+  .compare-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .comparison-container {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+}

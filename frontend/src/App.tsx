@@ -4,16 +4,29 @@ import NavBar from './components/NavBar/NavBar';
 import Register from './pages/Register/Register';
 import Login from './pages/Login/Login';
 import About from './pages/About/About';
+import PortfolioDash from "./pages/UserPortfolios/PortfolioDash/portfolioDash";
+import SinglePortfolio from "./pages/UserPortfolios/SinglePortfolio/SinglePortfolio";
+import PortfolioComparison from "./pages/UserPortfolios/PortfolioComparison/PortfolioComparison";
+import Profile from "./pages/Profile/Profile";
+import PublicPortfolioGallery from "./pages/PublicPortfolios/PublicPortfolioGallery";
 
 function App() {
   return (
     <Router>
       <NavBar/>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route  path="/about" element={<About/>}/>
+        <Route path="/about" element={<About/>}/>
+        <Route path="/portfolios/public" element={<PublicPortfolioGallery/>}/>
+        <Route path="/portfolios/shared/:token" element={<SinglePortfolio/>}/>
+        <Route path="/:userId/portfolios" element={<PortfolioDash/>}/>
+        <Route path="/:userId/portfolios/:portfolioId" element={<SinglePortfolio/>}/>
+        <Route path="/:userId/portfolios/compare" element={<PortfolioComparison/>}/>
+        <Route path="/:userId/profile" element={<Profile/>}/>
+        <Route path="/users/:userId/public" element={<Profile/>}/>
       </Routes>
       
     </Router>

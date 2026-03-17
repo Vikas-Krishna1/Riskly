@@ -1,0 +1,243 @@
+/* ============================================================
+   PERFORMANCE ATTRIBUTION - Enterprise Analytics Table
+   ============================================================ */
+
+.performance-attribution-container {
+  padding: var(--space-8);
+  background: var(--color-surface-1);
+  border-radius: var(--radius-xl);
+  margin: var(--space-8) 0;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.attribution-section-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-2);
+  color: var(--color-text-primary);
+}
+
+.attribution-description {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-8);
+  font-size: var(--text-sm);
+}
+
+/* ============================================================
+   SUMMARY CARDS
+   ============================================================ */
+.attribution-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.summary-card {
+  background: var(--color-surface-2);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+  transition: all var(--transition-fast);
+}
+
+.summary-card:hover {
+  border-color: var(--color-border-default);
+}
+
+.summary-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-2);
+}
+
+.summary-value {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+}
+
+.summary-value.positive {
+  color: var(--color-success);
+}
+
+.summary-value.negative {
+  color: var(--color-danger);
+}
+
+.summary-subtext {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+/* ============================================================
+   CHART CONTAINER
+   ============================================================ */
+.attribution-chart-container {
+  margin-bottom: var(--space-8);
+  background: var(--color-surface-2);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.chart-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-4);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chart-title::before {
+  content: '';
+  width: 4px;
+  height: 16px;
+  background: var(--gradient-brand);
+  border-radius: var(--radius-full);
+}
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+.attribution-tooltip {
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: var(--shadow-lg);
+}
+
+.tooltip-title {
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.tooltip-subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  margin-bottom: var(--space-2);
+}
+
+.tooltip-value {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  margin: var(--space-1) 0;
+  font-family: var(--font-mono);
+}
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.attribution-tables {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+.attribution-table-container {
+  background: var(--color-surface-2);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+  overflow-x: auto;
+}
+
+.table-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-4);
+  color: var(--color-text-primary);
+}
+
+.attribution-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.attribution-table thead {
+  background: var(--color-surface-3);
+}
+
+.attribution-table th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-border-default);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.attribution-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+}
+
+.attribution-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.attribution-table tbody tr:hover {
+  background: var(--color-bg-hover);
+}
+
+.attribution-table td.positive {
+  color: var(--color-success);
+  font-weight: var(--font-medium);
+  font-family: var(--font-mono);
+}
+
+.attribution-table td.negative {
+  color: var(--color-danger);
+  font-weight: var(--font-medium);
+  font-family: var(--font-mono);
+}
+
+.symbol-cell {
+  font-weight: var(--font-semibold);
+  color: var(--color-brand-400);
+}
+
+.sector-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  margin-right: var(--space-2);
+  vertical-align: middle;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .performance-attribution-container {
+    padding: var(--space-5);
+  }
+
+  .attribution-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .attribution-table {
+    font-size: var(--text-xs);
+  }
+
+  .attribution-table th,
+  .attribution-table td {
+    padding: var(--space-2) var(--space-3);
+  }
+}
